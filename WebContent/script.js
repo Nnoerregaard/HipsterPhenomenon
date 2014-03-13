@@ -330,6 +330,11 @@ function createRecommendationView() {
 	pHeader.textContent = "You have previously bought";
 	text.appendChild(pHeader);
 	var description = document.createElement("div");
+	var toSend = "name=" + customer.username;
+	//This is supposed to get the purchase history from the tomcat server. Unfortunately it does not work yet because of an unknown error
+	sendRequest("GET", "rest/shop/purchases", toSend, function(response) {
+		alert(response);
+	});
 	description.innerHTML = "Here is supposed to be a list with all previous purchases"; //We need to use inner HTML because the string contains HTML tags
 	text.appendChild(description);
 	frame.appendChild(text);

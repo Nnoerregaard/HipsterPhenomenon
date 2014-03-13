@@ -17,6 +17,7 @@ LINJE 4: git push: sends your package from your outbox to GitHub so that the cen
 package dk.cs.dwebtek;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.*;
 import java.nio.file.Paths;
 import java.util.*;
@@ -54,6 +55,10 @@ public class ShopService{
 	public ShopService(@Context ServletContext session){
 		schemaPath = session.getRealPath("WEB-INF/cloud.xsd");
 	}
+	
+	public ShopService() {
+		
+	}
 
 	@PostConstruct
 	public void init(){
@@ -62,7 +67,32 @@ public class ShopService{
 		b = new SAXBuilder();
 		shopKey = "E445247AA36C3E7174F5611B";
 	}
+	
+	/*
+	 * This method is supposed to return a string representation of a JSON array containing all the products you have bought so far. Right now it causes an exception so
+	 * do not call it at the moment
+	 */
+	
+	/*
 
+	@GET
+	@Path("purchases")
+	public String returnSoldItems(@FormParam("name") String name){
+		JSONArray array = new JSONArray();
+		String itemName = "";
+		List<Element> purchases = new ArrayList<Element>();
+		purchases = getCustomerPurchases(name);
+		for (Element e : purchases){
+			for (Element el : getItems()){
+				if(e.getChildText("itemID", ns) == el.getChildText("itemID", ns)) {itemName = el.getChildText("itemName", ns);}
+			}
+			JSONObject o = new JSONObject();
+			o.put("name", itemName);
+			array.put(o);
+		}
+	return array.toString();	
+	}
+	
 	/*
 	 * Method for creating new customers. Is called if the customer wants to create a new account. If something goes wrong or the username/password
 	 * does not fulfill the servers requirement false is sent to JavaScript. Then our JavaScript can act accordingly.
@@ -155,7 +185,7 @@ public class ShopService{
 			return false;
 		}
 	}
-
+	
 	/*
 	 * Takes all the items currently on the sever that are not deleted and returns them as a JSON array turned into a string. The reason
 	 * we use a JSON array is that it is easier to work with in JavaScript
@@ -185,8 +215,8 @@ public class ShopService{
 			array.put(o);
 		}
 		return array.toString();
-	} 
-
+	}
+	
 	/* 
 	 * |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	 * Here the private helper methods start and the public interface of the class ends
@@ -197,9 +227,11 @@ public class ShopService{
 	 * A private helper method for transforming a user name (which we get from the JavaScript code) into a customerID (which we need for the
 	 * sellItems call to the cloud)
 	 */
+	//NB!! For some strange reason this method casts an exception when getInputStream is called! Thus, do not call this (it will bring down the tomcat server)
 	private String getCustomerID(String username){
 		HttpURLConnection connection = connect("GET", "listCustomers");
 		try {
+			InputStream s = connection.getInputStream();
 			Document d = b.build(connection.getInputStream());
 			connection.getResponseCode();
 			List<Element> customers = d.getRootElement().getChildren();
