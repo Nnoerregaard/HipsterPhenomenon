@@ -1,15 +1,17 @@
 /*
-GIT VEJLEDNING
-HVIS DU BRUGER WINDOWS SÅ HUSK AT BRUGE GIT SHELL OG IKKE DEN ALMINDELINGE WINDOWS CMD!
+GIT TUTORIAL
+IF YOU ARE USING WINDOWS THEN USE GIT COMMAND SHELL INSTEAD OF THE STANDARD WINDOWS CMD!
 
-LINJE 1: git add -A: Tilføjer alt det du har ændret til en ny pakke, som du kan ligge i din udbakke i næste linje. -A betyder alle filer.
-Det er lettest bare at tilføje alle filer selvom du kun har ændret på en fil!
-LINJE 2: git commit -m "commit besked": Tilføjer den pakke du lige har lavet til udbakken. Vigtigt fordi ellers bliver din kode 
-overskrevet, når du laver "git pull" i næste linje (husk gåseøjn omkring commit beskeden. Beskeden skal være der, og den må meget gerne være
-informativ omkring hvad du har lavet!)
-LINJE 3: git pull: trækker den nyeste version af projektet ned fra serveren. MEGET VIGTIGT, så der ikke opstår fejl,
-hvis andre retter samtidig med dig!!!
-LINJE 4: git push: sender din pakke fra udbakken (fra commit) op til serveren, så den kommer til at ligge oppe på nettet
+REMEMBER TO PULL BEFORE YOU START WORKING ON ANYTHING!
+LINE 1: git add -A: Add everything you have changed to a new package that you can put in your outbox in the next step. -A means all files.
+It is easiest to add all files even though you have change one or a few files.
+LINE 2: git commit -m "commit message": Add the package you made in the previous step to your outbox.
+It is important because otherwise your code will be overwritten when you conduct pull in the next line 
+Remember the "" around the commit message. 
+(The message has to be there and it would be nice if you make it informativ telling what you have changed in the commit)
+LINJE 3: git pull: Pulls the latest version of the project from GitHub. VERY IMPORTANT if someone changes something while you were working.
+Therefore DON'T forget to pull before you push to avoid conflicting versions on github  
+LINJE 4: git push: sends your package from your outbox to GitHub so that the central version of the code is updated on the internet
 */
 
 //Run this function when we have loaded the HTML document
