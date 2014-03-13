@@ -45,6 +45,7 @@ public class ShopService{
 	private String schemaPath;
 	private XMLOutputter outputter;
 	private SAXBuilder b;
+	private List<Element> previousPurchases;
 	private String shopKey;
 
 	/*
@@ -60,6 +61,7 @@ public class ShopService{
 		ns = Namespace.getNamespace("http://www.cs.au.dk/dWebTek/2014");
 		outputter = new XMLOutputter();
 		b = new SAXBuilder();
+		previousPurchases = new ArrayList<Element>();
 		shopKey = "E445247AA36C3E7174F5611B";
 	}
 
@@ -144,6 +146,7 @@ public class ShopService{
 			Validator.validateXML(d, Paths.get(schemaPath, "")); //We validate our XML to make the cloud server happy! :)
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200){
+				previousPurchases = getCustomerPurchases(name);
 				return true;
 			}
 			else{
@@ -216,6 +219,25 @@ public class ShopService{
 			connection.disconnect();
 		}	
 		return "";
+	}
+	
+	/*
+	 * A private helper method that returns all the purchases a given customer has made in our shop
+	 */
+	
+	private List<Element> getCustomerPurchases(String customerName){
+		String customerID = getCustomerID(customerName);
+		HttpURLConnection connection = connect("GET", "listCustomerSales?customerID=" + customerID);
+		try {
+			Document d = b.build(connection.getInputStream());
+			return d.getRootElement().getChildren("sale", ns);
+			
+		} catch (JDOMException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
 	}
 
 	/*
