@@ -17,7 +17,6 @@ LINJE 4: git push: sends your package from your outbox to GitHub so that the cen
 package dk.cs.dwebtek;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.*;
 import java.nio.file.Paths;
 import java.util.*;
@@ -47,7 +46,7 @@ public class ShopService{
 	private XMLOutputter outputter;
 	private SAXBuilder b;
 	private String shopKey;
-
+	@Context ServletContext serverData;
 	/*
 	 * This is the constructor which initializes all the field variables we need. It works as a constructor because it has the PostConstruct annotation
 	 */
@@ -56,8 +55,12 @@ public class ShopService{
 		schemaPath = session.getRealPath("WEB-INF/cloud.xsd");
 	}
 	
+	/*
+	 * A dummy constructor allowing us to debug using the debugClass
+	 */
+	
 	public ShopService() {
-		
+		init(); //It calls init to initialize the right values
 	}
 
 	@PostConstruct
@@ -69,26 +72,53 @@ public class ShopService{
 	}
 	
 	/*
+	 * This method retreives all the shops from the cloud server and returns them as a string representation containing their name and URL
+	 */
+	
+	@GET
+	@Path("showShops") 
+	public String showShops(){
+		JSONArray returnArray = new JSONArray();
+		HttpURLConnection connection = connect("GET", "listShops");
+		try {
+			Document response = b.build(connection.getInputStream());
+			for (Element e : response.getRootElement().getChildren("shop", ns)) {
+				JSONObject o = new JSONObject();
+				o.put("Name", e.getChildText("shopName", ns));
+				o.put("URL", e.getChildText("shopURL", ns));
+				returnArray.put(o);
+			};
+		} catch (JDOMException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return returnArray.toString();
+	}
+	
+	/*
 	 * This method is supposed to return a string representation of a JSON array containing all the products you have bought so far. Right now it causes an exception so
 	 * do not call it at the moment
 	 */
-	
-	/*
 
 	@GET
 	@Path("purchases")
-	public String returnSoldItems(@FormParam("name") String name){
+	public String returnSoldItems(){
+		String currentUser = (String) serverData.getAttribute("username");
 		JSONArray array = new JSONArray();
 		String itemName = "";
 		List<Element> purchases = new ArrayList<Element>();
-		purchases = getCustomerPurchases(name);
+		purchases = getCustomerPurchases(currentUser);
+		List<Element> items = getItems(); //The list is retreived here to make the code more efficient
 		for (Element e : purchases){
-			for (Element el : getItems()){
-				if(e.getChildText("itemID", ns) == el.getChildText("itemID", ns)) {itemName = el.getChildText("itemName", ns);}
+			for (Element el : items){
+				if(e.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))) {
+					itemName = el.getChildText("itemName", ns);
+					JSONObject o = new JSONObject();
+					o.put("name", itemName);
+					array.put(o);
+				}
 			}
-			JSONObject o = new JSONObject();
-			o.put("name", itemName);
-			array.put(o);
 		}
 	return array.toString();	
 	}
@@ -174,6 +204,7 @@ public class ShopService{
 			Validator.validateXML(d, Paths.get(schemaPath, "")); //We validate our XML to make the cloud server happy! :)
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200){
+				serverData.setAttribute("username", name);
 				return true;
 			}
 			else{
@@ -227,11 +258,9 @@ public class ShopService{
 	 * A private helper method for transforming a user name (which we get from the JavaScript code) into a customerID (which we need for the
 	 * sellItems call to the cloud)
 	 */
-	//NB!! For some strange reason this method casts an exception when getInputStream is called! Thus, do not call this (it will bring down the tomcat server)
 	private String getCustomerID(String username){
 		HttpURLConnection connection = connect("GET", "listCustomers");
 		try {
-			InputStream s = connection.getInputStream();
 			Document d = b.build(connection.getInputStream());
 			connection.getResponseCode();
 			List<Element> customers = d.getRootElement().getChildren();

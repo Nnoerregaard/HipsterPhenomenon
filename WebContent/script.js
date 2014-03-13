@@ -53,7 +53,7 @@ window.onload = function() {
 
 				document.getElementById("feedback").innerHTML = "You are logged in as " + unencodedUsername;
 				document.getElementById("totalPrice").innerHTML = "| The total price of your purchase is: " + customer.totalPrice;
-				
+
 				createRecommendationView();
 			} else if (loginResponse === "false"){
 				customer.loggedIn = false;
@@ -275,7 +275,7 @@ function addItemsToTable(items) {
 			addButton.style.visibility = "hidden";
 			buttonCell.textContent = "Out of stock";
 		}
-		
+
 		/*
 		 * An event listener for our drag functionality. We pased on information about itemID, itemPrice and itemStock needed to add the item to the cart. This infomation
 		 * can then be read in our drop handler. We add an unique drag handler for each object on the page
@@ -322,7 +322,7 @@ function createRecommendationView() {
 	var container = document.getElementById("productcontainer");
 	var frame = document.createElement("div");
 	frame.setAttribute("class", "productframe");
-	
+
 	//Previous purchases and previous purchases headline
 	var text = document.createElement("div");
 	text.setAttribute("class","productText");
@@ -330,11 +330,14 @@ function createRecommendationView() {
 	pHeader.textContent = "You have previously bought";
 	text.appendChild(pHeader);
 	var description = document.createElement("div");
-	var toSend = "name=" + customer.username;
-	//This is supposed to get the purchase history from the tomcat server. Unfortunately it does not work yet because of an unknown error
-	sendRequest("GET", "rest/shop/purchases", toSend, function(response) {
-		alert(response);
-	});
+	var toSend = "name=" + encodeURIComponent(customer.username);
+	//The retrival of purchases only work if the customer is logged in because otherwise the serverData variable on the server is not set and we get a nullPointerException
+	//This should never be called if the user is not logged in, but to be safe we check it here
+	if (customer.loggedIn){
+		sendRequest("GET", "rest/shop/purchases", toSend, function(response) {
+			alert(response);
+		});
+	}
 	description.innerHTML = "Here is supposed to be a list with all previous purchases"; //We need to use inner HTML because the string contains HTML tags
 	text.appendChild(description);
 	frame.appendChild(text);
@@ -342,7 +345,7 @@ function createRecommendationView() {
 	//Info
 	var info = document.createElement("div");
 	info.setAttribute("class", "productInfo");
-	
+
 	frame.appendChild(info);
 	container.appendChild(frame);
 }
