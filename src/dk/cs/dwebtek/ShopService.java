@@ -1,15 +1,15 @@
 /*
 GIT VEJLEDNING
-HVIS DU BRUGER WINDOWS S�� HUSK AT BRUGE GIT SHELL OG IKKE DEN ALMINDELINGE WINDOWS CMD!
+HVIS DU BRUGER WINDOWS S������ HUSK AT BRUGE GIT SHELL OG IKKE DEN ALMINDELINGE WINDOWS CMD!
 
-LINJE 1: git add -A: Tilf��jer alt det du har ��ndret til en ny pakke, som du kan ligge i din udbakke i n��ste linje. -A betyder alle filer.
-Det er lettest bare at tilf��je alle filer selvom du kun har ��ndret p�� en fil!
-LINJE 2: git commit -m "commit besked": Tilf��jer den pakke du lige har lavet til udbakken. Vigtigt fordi ellers bliver din kode 
-overskrevet, n��r du laver "git pull" i n��ste linje (husk g��se��jn omkring commit beskeden. Beskeden skal v��re der, og den m�� meget gerne v��re
+LINJE 1: git add -A: Tilf������jer alt det du har ������ndret til en ny pakke, som du kan ligge i din udbakke i n������ste linje. -A betyder alle filer.
+Det er lettest bare at tilf������je alle filer selvom du kun har ������ndret p������ en fil!
+LINJE 2: git commit -m "commit besked": Tilf������jer den pakke du lige har lavet til udbakken. Vigtigt fordi ellers bliver din kode 
+overskrevet, n������r du laver "git pull" i n������ste linje (husk g������se������jn omkring commit beskeden. Beskeden skal v������re der, og den m������ meget gerne v������re
 informativ omkring hvad du har lavet!)
-LINJE 3: git pull: tr��kker den nyeste version af projektet ned fra serveren. MEGET VIGTIGT, s�� der ikke opst��r fejl,
+LINJE 3: git pull: tr������kker den nyeste version af projektet ned fra serveren. MEGET VIGTIGT, s������ der ikke opst������r fejl,
 hvis andre retter samtidig med dig!!!
-LINJE 4: git push: sender din pakke fra udbakken (fra commit) op til serveren, s�� den kommer til at ligge oppe p�� nettet
+LINJE 4: git push: sender din pakke fra udbakken (fra commit) op til serveren, s������ den kommer til at ligge oppe p������ nettet
 */
 
 package dk.cs.dwebtek;
@@ -27,7 +27,6 @@ import org.json.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 
