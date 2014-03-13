@@ -1,15 +1,15 @@
 /*
 GIT VEJLEDNING
-HVIS DU BRUGER WINDOWS SÅ HUSK AT BRUGE GIT SHELL OG IKKE DEN ALMINDELINGE WINDOWS CMD!
+HVIS DU BRUGER WINDOWS S�� HUSK AT BRUGE GIT SHELL OG IKKE DEN ALMINDELINGE WINDOWS CMD!
 
-LINJE 1: git add -A: Tilføjer alt det du har ændret til en ny pakke, som du kan ligge i din udbakke i næste linje. -A betyder alle filer.
-Det er lettest bare at tilføje alle filer selvom du kun har ændret på en fil!
-LINJE 2: git commit -m "commit besked": Tilføjer den pakke du lige har lavet til udbakken. Vigtigt fordi ellers bliver din kode 
-overskrevet, når du laver "git pull" i næste linje (husk gåseøjn omkring commit beskeden. Beskeden skal være der, og den må meget gerne være
+LINJE 1: git add -A: Tilf��jer alt det du har ��ndret til en ny pakke, som du kan ligge i din udbakke i n��ste linje. -A betyder alle filer.
+Det er lettest bare at tilf��je alle filer selvom du kun har ��ndret p�� en fil!
+LINJE 2: git commit -m "commit besked": Tilf��jer den pakke du lige har lavet til udbakken. Vigtigt fordi ellers bliver din kode 
+overskrevet, n��r du laver "git pull" i n��ste linje (husk g��se��jn omkring commit beskeden. Beskeden skal v��re der, og den m�� meget gerne v��re
 informativ omkring hvad du har lavet!)
-LINJE 3: git pull: trækker den nyeste version af projektet ned fra serveren. MEGET VIGTIGT, så der ikke opstår fejl,
+LINJE 3: git pull: tr��kker den nyeste version af projektet ned fra serveren. MEGET VIGTIGT, s�� der ikke opst��r fejl,
 hvis andre retter samtidig med dig!!!
-LINJE 4: git push: sender din pakke fra udbakken (fra commit) op til serveren, så den kommer til at ligge oppe på nettet
+LINJE 4: git push: sender din pakke fra udbakken (fra commit) op til serveren, s�� den kommer til at ligge oppe p�� nettet
 */
 
 package dk.cs.dwebtek;
@@ -26,7 +26,10 @@ import org.jdom2.output.XMLOutputter;
 import org.json.*;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 
 /*
  * This class is responsible for receiving requests from the JavaScript running on our web page, creating the right XML
@@ -36,6 +39,7 @@ import javax.ws.rs.*;
 @Path("shop")
 public class ShopService{
 
+	
 	private Namespace ns;
 	private String schemaPath;
 	private XMLOutputter outputter;
@@ -45,6 +49,10 @@ public class ShopService{
 	/*
 	 * This is the constructor which initializes all the field variables we need. It works as a constructor because it has the PostConstruct annotation
 	 */
+	
+	public ShopService(@Context ServletContext session){
+		schemaPath = session.getRealPath("WEB-INF/cloud.xsd");
+	}
 
 	@PostConstruct
 	public void init(){
@@ -52,7 +60,6 @@ public class ShopService{
 		outputter = new XMLOutputter();
 		b = new SAXBuilder();
 		shopKey = "E445247AA36C3E7174F5611B";
-		schemaPath = "/Users/niklas/Documents/WebShopProjekt/UserPage/WebContent/WEB-INF/cloud.xsd"; //OBS!!!! NOTICE!! HARD-CODED PATH!!
 	}
 
 	/*
