@@ -1,15 +1,17 @@
 /*
-GIT VEJLEDNING
-HVIS DU BRUGER WINDOWS S������ HUSK AT BRUGE GIT SHELL OG IKKE DEN ALMINDELINGE WINDOWS CMD!
+GIT TUTORIAL
+IF YOU ARE USING WINDOWS THEN USE GIT COMMAND SHELL INSTEAD OF THE STANDARD WINDOWS CMD!
 
-LINJE 1: git add -A: Tilf������jer alt det du har ������ndret til en ny pakke, som du kan ligge i din udbakke i n������ste linje. -A betyder alle filer.
-Det er lettest bare at tilf������je alle filer selvom du kun har ������ndret p������ en fil!
-LINJE 2: git commit -m "commit besked": Tilf������jer den pakke du lige har lavet til udbakken. Vigtigt fordi ellers bliver din kode 
-overskrevet, n������r du laver "git pull" i n������ste linje (husk g������se������jn omkring commit beskeden. Beskeden skal v������re der, og den m������ meget gerne v������re
-informativ omkring hvad du har lavet!)
-LINJE 3: git pull: tr������kker den nyeste version af projektet ned fra serveren. MEGET VIGTIGT, s������ der ikke opst������r fejl,
-hvis andre retter samtidig med dig!!!
-LINJE 4: git push: sender din pakke fra udbakken (fra commit) op til serveren, s������ den kommer til at ligge oppe p������ nettet
+REMEMBER TO PULL BEFORE YOU START WORKING ON ANYTHING!
+LINE 1: git add -A: Add everything you have changed to a new package that you can put in your outbox in the next step. -A means all files.
+It is easiest to add all files even though you have change one or a few files.
+LINE 2: git commit -m "commit message": Add the package you made in the previous step to your outbox.
+It is important because otherwise your code will be overwritten when you conduct pull in the next line 
+Remember the "" around the commit message. 
+(The message has to be there and it would be nice if you make it informativ telling what you have changed in the commit)
+LINJE 3: git pull: Pulls the latest version of the project from GitHub. VERY IMPORTANT if someone changes something while you were working.
+Therefore DON'T forget to pull before you push to avoid conflicting versions on github  
+LINJE 4: git push: sends your package from your outbox to GitHub so that the central version of the code is updated on the internet
 */
 
 package dk.cs.dwebtek;
