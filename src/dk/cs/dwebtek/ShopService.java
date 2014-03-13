@@ -45,7 +45,6 @@ public class ShopService{
 	private String schemaPath;
 	private XMLOutputter outputter;
 	private SAXBuilder b;
-	private List<Element> previousPurchases;
 	private String shopKey;
 
 	/*
@@ -61,7 +60,6 @@ public class ShopService{
 		ns = Namespace.getNamespace("http://www.cs.au.dk/dWebTek/2014");
 		outputter = new XMLOutputter();
 		b = new SAXBuilder();
-		previousPurchases = new ArrayList<Element>();
 		shopKey = "E445247AA36C3E7174F5611B";
 	}
 
@@ -146,7 +144,6 @@ public class ShopService{
 			Validator.validateXML(d, Paths.get(schemaPath, "")); //We validate our XML to make the cloud server happy! :)
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200){
-				previousPurchases = getCustomerPurchases(name);
 				return true;
 			}
 			else{

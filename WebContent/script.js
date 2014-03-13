@@ -12,7 +12,7 @@ Remember the "" around the commit message.
 LINJE 3: git pull: Pulls the latest version of the project from GitHub. VERY IMPORTANT if someone changes something while you were working.
 Therefore DON'T forget to pull before you push to avoid conflicting versions on github  
 LINJE 4: git push: sends your package from your outbox to GitHub so that the central version of the code is updated on the internet
-*/
+ */
 
 //Run this function when we have loaded the HTML document
 window.onload = function() {	
@@ -53,6 +53,8 @@ window.onload = function() {
 
 				document.getElementById("feedback").innerHTML = "You are logged in as " + unencodedUsername;
 				document.getElementById("totalPrice").innerHTML = "| The total price of your purchase is: " + customer.totalPrice;
+				
+				createRecommendationView();
 			} else if (loginResponse === "false"){
 				customer.loggedIn = false;
 				alert("Your login information was wrong. Please try again.");
@@ -181,24 +183,14 @@ function addItemsToTable(items) {
 		var frame = document.createElement("div");
 		frame.setAttribute("class", "productframe");
 		frame.setAttribute("draggable", "true");
-		
-		/*
-		 * Method inspired by http://stackoverflow.com/questions/15839649/pass-object-through-datatransfer
-		 */
 
-		frame.addEventListener("dragstart", function(event) {
-			var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
-			JSONDragInformation = JSON.stringify(dragInformation);
-			event.dataTransfer.setData("Information", JSONDragInformation);
-		});
-		
 		//Image
 		var img = document.createElement("img");
 		img.setAttribute("class", "productimage");
 		img.setAttribute("alt", item.itemName);
 		img.setAttribute("src", item.itemURL);
 		frame.appendChild(img);
-		
+
 		//Item description and description headline
 		var text = document.createElement("div");
 		text.setAttribute("class","productText");
@@ -224,7 +216,7 @@ function addItemsToTable(items) {
 		priceLabel.textContent = "Price:";
 		priceLabelCell.appendChild(priceLabel);
 		priceRow.appendChild(priceLabelCell);
-		
+
 		var priceCell = document.createElement("td");
 		var price = document.createElement("h6");
 		price.textContent = item.itemPrice;
@@ -283,6 +275,18 @@ function addItemsToTable(items) {
 			addButton.style.visibility = "hidden";
 			buttonCell.textContent = "Out of stock";
 		}
+		
+		/*
+		 * An event listener for our drag functionality. We pased on information about itemID, itemPrice and itemStock needed to add the item to the cart. This infomation
+		 * can then be read in our drop handler. We add an unique drag handler for each object on the page
+		 * Method inspired by http://stackoverflow.com/questions/15839649/pass-object-through-datatransfer
+		 */
+
+		frame.addEventListener("dragstart", function(event) {
+			var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
+			JSONDragInformation = JSON.stringify(dragInformation);
+			event.dataTransfer.setData("Information", JSONDragInformation);
+		});
 
 		/*
 		 * This event listener is added for each add to chart button in turn when the view is build
@@ -290,7 +294,7 @@ function addItemsToTable(items) {
 		addEventListener(addButton, "click", function (){
 			addItemToCart(item.itemStock, item.itemID, item.itemPrice);
 		});
-		
+
 		/*
 		 * A function that adds items to the shopping cart
 		 */
@@ -307,7 +311,35 @@ function addItemsToTable(items) {
 
 		//last appending
 		container.appendChild(frame);
-});
+	});
+}
+
+/*
+ * Creates the recommendation view when the user is logged in
+ */
+
+function createRecommendationView() {
+	var container = document.getElementById("productcontainer");
+	var frame = document.createElement("div");
+	frame.setAttribute("class", "productframe");
+	
+	//Previous purchases and previous purchases headline
+	var text = document.createElement("div");
+	text.setAttribute("class","productText");
+	var pHeader = document.createElement("h5");
+	pHeader.textContent = "You have previously bought";
+	text.appendChild(pHeader);
+	var description = document.createElement("div");
+	description.innerHTML = "Here is supposed to be a list with all previous purchases"; //We need to use inner HTML because the string contains HTML tags
+	text.appendChild(description);
+	frame.appendChild(text);
+
+	//Info
+	var info = document.createElement("div");
+	info.setAttribute("class", "productInfo");
+	
+	frame.appendChild(info);
+	container.appendChild(frame);
 }
 
 /*
@@ -344,23 +376,26 @@ function addItemToCart(itemStock, itemID, itemPrice) {
 			customer.totalPrice += parseInt(itemPrice);
 			document.getElementById("totalPrice").innerHTML = "| The total price of your purchase is: " + customer.totalPrice;
 		}
-	else if (addButton.style.visibility != undefined){
-		addButton.style.visibility="hidden"; //IF you buy too many items the add button disappears
-		buttonCell.textContent = "Out of stock";
+		else if (addButton.style.visibility != undefined){
+			addButton.style.visibility="hidden"; //IF you buy too many items the add button disappears
+			buttonCell.textContent = "Out of stock";
+		}
+	}
+	else {
+		alert("Log in to add products to your shopping cart"); //If nobody is logged in the user is told to log in
 	}
 }
-else {
-	alert("Log in to add products to your shopping cart"); //If nobody is logged in the user is told to log in
-}
-}
 
+/*
+ * The function that handles our drop event by reading the data collected during drag
+ */
 function handleDrop(event) {
 	var information = JSON.parse(event.dataTransfer.getData("Information", JSONDragInformation));
 	addItemToCart(information.stock, information.ID, information.price);
 }
 
 /*
- * Taken from http://www.w3schools.com/html/html5_draganddrop.asp
+ * Taken from http://www.w3schools.com/html/html5_draganddrop.asp. Allows us to drop items
  */
 
 function allowDrop(ev) {
