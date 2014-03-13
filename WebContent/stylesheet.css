@@ -1,0 +1,274 @@
+/*This defines what is true for the entire page like font family*/
+body {
+	font-family: "Arial Black", Gadget, sans-serif;
+	background: url('images/background.png') top right no-repeat;
+	background-attachment: fixed;
+	padding: 0;
+	margin: 0;
+}
+
+#productImage{
+    float:right;
+    width:60%;
+    margin: 1.5em 3em 0em 3em;
+}
+#editArea{
+    float:left;
+}
+
+/*Paragraphs defined to have a bigger font size*/
+
+p {
+	font-size: .625em;
+	font-weight: normal;
+}
+
+/*Links should have a different color*/
+
+a {
+	color: #dddddd;
+	text-decoration: none;
+}
+
+/*Links should be underlined when hovered over*/
+
+a:hover {
+	text-decoration: underline;
+}
+
+/*We want the headers to have a smaller margin than what is standard*/
+
+
+h1, h2, h3, h4, h5, h6 {
+	margin: .4em 0;
+}
+
+/*This is the header which is the container for the entire bar in the top. It is fixed so that it does not moved when scrolling
+It has a fized height and is 100% in width. The z-index is there to insure that the topbar is always displayed on top
+when scrolling*/
+
+#header{
+	z-index: 299;
+	position: fixed;
+	height: 3.125em;
+	width: 100%;
+}
+
+/*This is properties for the box containing the website title*/
+
+#titlebox  {
+	width: 70em;
+	margin: auto;
+}
+
+/*Makes the title of the website in the top part of the header float left*/
+
+#title {
+	float: left;
+}
+
+/*Determines the properties of the website title*/
+
+#title h1 {
+	margin: .07em 1.563em;
+	color: yellow;
+}
+
+/*This is the top part of the top bar containing the website title*/
+
+#mainheader {
+	background-color: #000000;
+	height: 3.1em;
+}
+
+/*This is the lower part of the top bar containing the menu items. The opacity properties makes it transparent*/
+
+#subheader {
+	position: absolute;
+	background-color: #000000;
+	height: 1.875em;
+	width: 100%;
+	opacity: .8;
+	top: 3.125em;
+	box-shadow: 0 0 1.875em #000000;
+}
+
+/*Defines the list containing the top menu*/
+
+#subheaderList {
+	width: 70em;
+	margin: auto;
+	position: relative;
+}
+
+#subheaderList input {
+	margin-top: .3em;
+}
+
+#feedback {
+	float: left;
+	color:yellow;
+	margin-left: 17.9em;
+}
+
+#totalPrice {
+	float: left;
+	color:yellow;
+	margin-left: .3em
+}
+
+#buyButtonDiv {
+	float: right;
+	margin-right: 1.2em
+}
+
+#buyButton {
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: lime;
+	border-color: lime;
+	border-radius: 5px;
+	width: 10em;
+	visibility: ;
+}
+
+/*Defines what is true for every single menu item*/
+
+/*Defines the search box on the top bar*/
+
+/*This is the main container holding the the product picture */
+
+#container {
+	background-color: #FFFFFF;
+	width: 70em;
+	height: auto;
+	margin: auto;
+	z-index: 10;
+	box-shadow: 0 0 1.3em #FFFFFF;
+}
+
+/*main makes sure the background image is not seen in the main part. It is placed within the container*/
+
+#main {
+	width: 100%;
+	height: 100%;
+	float: right;
+	padding: 5.5em 0 0 0;
+	margin: auto;
+}
+
+/*This is the left sidebar. It doesn't move when scrolling because of the "fixed" property and it is a bit transparent
+because of the opacity property*/
+
+#sidebar {
+	position: fixed;
+	z-index: 299;
+	background-color: #000000;
+	opacity: .8;
+	border: .15em #000000 solid;
+	float: left;
+	width: 16.5em;
+	height: auto;
+	margin-left: 10px;
+	border-radius: 0.313em;
+	box-shadow: 0 0 0.625em #000000;
+}
+
+#categories {
+	color: yellow;
+}
+
+#productMenu {
+	margin-left: 8%;
+}
+
+#productMenu li, #productMenu li a {
+	color: #777777;
+}
+
+#productMenu li:hover {
+	text-decoration: underline;
+}
+
+/*This is what is true for the container containing the product frame*/
+
+#label{
+    text-align:left;
+    margin-top: 2em;
+    
+}
+
+#productcontainer {
+    color:yellow;
+	background: rgba(0, 0, 0, 0.8);
+	float: right;
+    width: 74.5%;
+    border-radius: 5px;
+    box-shadow: 0 0 0.625em #000000;
+}
+
+/*The frame containing the image and the product info */
+
+.productframe {
+	border: .063em #777777 solid;
+	width: 99.3%;
+	height: 11.25em;
+	float: left;
+	margin: .125em;
+	border-radius: 0.3em 0.3em 0.3em 0.3em;
+}
+
+/*This describes the image for the products*/
+
+.productimage {
+	width: auto;
+	height: 9.9em;
+	margin: .625em;
+	background-size: 100%;
+	border: .063em gray solid;
+	border-radius: 0.3em;
+	float: left;
+}
+
+.productText {
+	float: left;
+	margin: .6em 0;
+	width: 15em;
+	height: 80%;
+}
+
+.productText p {
+	color: #FFFFFF;
+}
+
+.productInfo {
+	margin: .6em 1em;
+	float:right;
+	width: auto;
+}
+
+.productInfo h6 {
+	margin: 0;
+}
+
+.productInfo input{
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: lime;
+	border-color: lime;
+	border-radius: 5px;
+	width: 10em;
+	height: 1.8em;
+	margin-top: 5.9em;
+}
+
+/*The footer at the bottom of the page*/
+
+#footer {
+	background: #333333;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	height: 1.25em;
+	width:100%;
+}

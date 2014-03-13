@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link type="text/css" href="stylesheet.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>HipsterPhenonemon</title>
+<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+	<header id="header">
+		<div id="titlebox">
+			<div id="title">
+				<h1>HipsterPhenomenon</h1>
+			</div>
+		</div>
+		<!--This area defines the header. Mainheader is the top part of the header. Subheader is the lower part of the header-->
+		<div id="mainheader"></div>
+		<div id="subheader">
+			<!--SubheaderList is the list containing the top menu called menuList-->
+			<div id="subheaderList">
+				<div id="feedback">
+					<input id="usernameField" type="text" placeholder="Enter Username" />
+					<input id="passwordField" type="password"
+						placeholder="Enter Password" />
+				</div>
+				<div id="totalPrice" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
+					<input id="loginButton" type="button" value="Login" /> <input
+						id="createCustomer" type="button" value="Create user" />
+				</div>
+				<div id="buyButtonDiv">
+					<input id="buyButton" type="button" value="Buy" />
+				</div>
+			</div>
+		</div>
+	</header>
+	<!--Container and main is the area with the actual content-->
+	<div id="container">
+		<div id="main">
+			<!--This section defines the sidebar to the left-->
+			<div id="sidebar">
+				<div id="categories">
+					<h3>Categories</h3>
+					<div id="productMenu">
+						<h4>
+							<a href="#">Shoes</a>
+						</h4>
+						<ul>
+							<li><h5>
+									<a href="#">Converse</a>
+								</h5></li>
+							<li><h5>
+									<a href="#">Nike</a>
+								</h5></li>
+							<li><h5>
+									<a href="#">Addidas</a>
+								</h5></li>
+						</ul>
+						<h4>
+							<a href="#">Jeans</a>
+						</h4>
+						<ul>
+							<li><h5>
+									<a href="#">Jack &amp; Jones</a>
+								</h5></li>
+							<!-- How to make the & sign is taken from http://text-symbols.com/html/ -->
+							<li><h5>
+									<a href="#">Solid</a>
+								</h5></li>
+							<li><h5>
+									<a href="#">Leevies</a>
+								</h5></li>
+						</ul>
+						<h4>
+							<a href="#">Shirts</a>
+						</h4>
+						<ul>
+							<li><h5>
+									<a href="#">Samsøe, samsøe</a>
+								</h5></li>
+							<li><h5>
+									<a href="#">G-star</a>
+								</h5></li>
+							<li><h5>
+									<a href="#">Minimum</a>
+								</h5></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!--Product container contains the product frames-->
+			<div id="productcontainer">
+			</div>
+		</div>
+	</div>
+	<!--This is the footer which can be seen in the bottom of the page-->
+	<div id="footer"></div>
+</body>
+</html>

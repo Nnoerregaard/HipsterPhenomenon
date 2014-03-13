@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My web shop</title>
+<script type="text/javascript" src="script.js"></script>
+</head>
+<body>
+	<table style="border: 1px solid gray">
+		<thead>
+			<tr>
+				<td><input id="usernameField" type="text"
+					placeholder="Enter username..." /> <input id="passwordField"
+					type="password" placeholder="Enter password..." /> <input
+					id="loginButton" type="submit" value="Sign in!" /> <input
+					id="createCustomer" type="submit" value="Create customer!" />
+					<p id="feedback"></p>
+				</td>
+			<tr>
+				<td>ID</td>
+				<td>Name</td>
+				<td>Price</td>
+				<td>Stock</td>
+				<td>Description</td>
+				<td></td> <!-- The empty table data is needed in order for "Amount in cart" to be placed correctly -->
+				<td>Amount in cart</td>
+			</tr>
+		</thead>
+
+		<tbody id="itemtablebody"></tbody>
+	</table>
+	<input type="button" value="Buy items!" id="buyButton">
+	<p id="totalPrice">The total price of your purchase is: 0</p>
+</body>
+</html>
