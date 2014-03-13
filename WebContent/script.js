@@ -15,7 +15,7 @@ LINJE 4: git push: sends your package from your outbox to GitHub so that the cen
  */
 
 //Run this function when we have loaded the HTML document
-window.onload = function() {	
+$(function() {	
 	// Request items from the server. The server expects no request body, so we
 	// set it to null
 	sendRequest("GET", "rest/shop/items", null, function(itemsText) {
@@ -23,19 +23,16 @@ window.onload = function() {
 		var items = JSON.parse(itemsText);
 		addItemsToTable(items);
 	});
-	var loginButton = document.getElementById("loginButton");
 	/*
 	 * Adds the event handler to the login button. Reads the user name and password field, sends it to the server and logs the user in if the login is right.
 	 * Otherwise, it presents the user with an error message
 	 */
-	addEventListener(loginButton, "click", function() {
+	$("#loginButton").on("click", function() {
 		/*
 		 * Encode the text before sending to avoid cross-site scripting and to avoid problems with special characters
 		 */
-		var unencodedUsername = document.getElementById("usernameField").value;
-		var username = encodeURIComponent(unencodedUsername);
-		var unencodedPassword = document.getElementById("passwordField").value;
-		var password = encodeURIComponent(unencodedPassword);
+		var username = encodeURIComponent($("#usernameField").val());
+		var password = encodeURIComponent($("#passwordField").val());
 
 		var toSend = "username=" + username + "&" + "password=" + password;
 		sendRequest("POST", "rest/shop/login", toSend, function(loginResponse) {
@@ -46,13 +43,13 @@ window.onload = function() {
 				 * We hide the create customer button and login form when you are successfully logged in
 				 */
 
-				document.getElementById("usernameField").style.visibility = "hidden";
-				document.getElementById("passwordField").style.visibility = "hidden";
-				loginButton.style.visibility = "hidden";
-				createButton.style.visibility = "hidden";
+				$("#usernameField").attr("visibility", "hidden");
+				$("#passwordField").attr("visibility", "hidden");
+				$("#loginButton").attr("visibility", "hidden");
+				$("#createButton").attr("visibility", "hidden");
 
-				document.getElementById("feedback").innerHTML = "You are logged in as " + unencodedUsername;
-				document.getElementById("totalPrice").innerHTML = "| The total price of your purchase is: " + customer.totalPrice;
+				$("#feedback").html("You are logged in as " + $("#usernameField").val());
+				$("#totalPrice").html("| The total price of your purchase is: " + customer.totalPrice);
 
 				createRecommendationView();
 			} else if (loginResponse === "false"){
@@ -67,11 +64,10 @@ window.onload = function() {
 			}
 		});
 	});
-	var buyButton = document.getElementById("buyButton");
 	/*
 	 * Adds the eventHandler to the buy button. This is used when you want to buy products on the server
 	 */
-	addEventListener(buyButton, "click", function() {
+	$("#buyButton").on("click", function() {
 		// Same as above, get the items from the server
 		if(customer.loggedIn) {
 			var cart = customer.cart; //Copy cart to the variable cart
@@ -91,7 +87,7 @@ window.onload = function() {
 						});
 						//This else is executed if the purchase did not succeed!
 					} else {
-						document.getElementById("totalPrice").innerHTML="Something went wrong";
+						$("#totalPrice").html("Something went wrong");
 					}
 				});
 			});
@@ -99,13 +95,13 @@ window.onload = function() {
 			 * Do not write in plural if the customer only bought one product
 			 */
 			if (customer.amountSold == 0) {
-				document.getElementById("totalPrice").innerHTML="| Please add something to your cart";
+				$("#totalPrice").html("| Please add something to your cart");
 			}
 			else if(customer.amountSold > 1) {
-				document.getElementById("totalPrice").innerHTML="| You have succesfully bought the items";
+				$("#totalPrice").html("| You have succesfully bought the items");
 			}
 			else {
-				document.getElementById("totalPrice").innerHTML="| You have succesfully bought the item";
+				$("#totalPrice").html("| You have succesfully bought the item");
 			}
 			reset(); //Is executed before the items has actually been sold. It does not matter, however, since we have a copy of the cart in the variable cart
 		} else {
@@ -115,24 +111,21 @@ window.onload = function() {
 	/*
 	 * Adds the eventHandler to the create customer button. It sends a request to the server to create a new customer
 	 */
-	var createButton = document.getElementById("createCustomer");
-	addEventListener(createButton, "click", function() {
+	$("#createCustomer").on("click", function() {
 		/*
 		 * Encode the text before sending to avoid cross-site scripting and to avoid problems with special characters
 		 */
-		var unencodedUsername = document.getElementById("usernameField").value;
-		var username = encodeURIComponent(unencodedUsername);
-		var unencodedPassword = document.getElementById("passwordField").value;
-		var password = encodeURIComponent(unencodedPassword);
+		var username = encodeURIComponent($("#usernameField").val());
+		var password = encodeURIComponent($("#passwordField").val());
 		/*
 		 * We check whether or not the input is valid in JavaScript to avoid sending unnecessary data to and from the tomcat server and to avoid doing unnecessary work
 		 * on the tomcat server. This would especial be a great benefit if our site had a lot of users
 		 */
-		if (unencodedUsername.length >= 2 && unencodedUsername.length <= 20 && unencodedPassword.length >= 3 && unencodedPassword.length <= 20) {
+		if ($("#usernameField").val().length >= 2 && $("#usernameField").val().length <= 20 && $("#passwordField").val().length >= 3 && $("#passwordField").val().length <= 20) {
 			var toSend = "username=" + username + "&" + "password=" + password;
 			sendRequest("POST", "rest/shop/createCustomer", toSend, function(createResponse) {
 				if (createResponse === "true") {
-					alert("Customer " + unencodedUsername + " created succesfully");
+					alert("Customer " + $("#usernameField").val() + " created succesfully");
 				}
 				else {
 					alert("Something went wrong. Please check your internet connection and try again. If the error persists the server might be down");
@@ -148,26 +141,26 @@ window.onload = function() {
 			resetFields();
 		}
 	});
-};
-/*
- * This is the central object in our JavaScript. It contains all the information we need above the customer. It is used throughout our JavaScript code!
- */
-var customer = {
-		loggedIn: false,
-		amountSold: 0,
-		cart: [],
-		totalPrice: 0,
-		username: ""
-};
-function reset() {
-	customer.cart = [];
-	customer.totalPrice = 0;
-	customer.amountSold = 0;
-}
-function resetFields() {
-	document.getElementById("usernameField").value = "";
-	document.getElementById("passwordField").value = "";
-}
+	/*
+	 * This is the central object in our JavaScript. It contains all the information we need above the customer. It is used throughout our JavaScript code!
+	 */
+	var customer = {
+			loggedIn: false,
+			amountSold: 0,
+			cart: [],
+			totalPrice: 0,
+			username: ""
+	};
+	function reset() {
+		customer.cart = [];
+		customer.totalPrice = 0;
+		customer.amountSold = 0;
+	}
+	function resetFields() {
+		document.getElementById("usernameField").value = "";
+		document.getElementById("passwordField").value = "";
+	}
+});
 /*
  * This function adds the items on our server to our view. It also adds the add to cart button and its event handler!
  */
@@ -339,11 +332,12 @@ function createRecommendationView() {
 		sendRequest("GET", "rest/shop/purchases", toSend, function(response) {
 			purchasedItems = JSON.parse(response);
 			var addedItems = [];
-
-			var li = document.createElement("li");
-			li.textContent = purchasedItems[item].name;
-			addedItems.push(purchasedItems[item].name);
-			purchaseList.appendChild(li);
+			for (var item in purchasedItems){
+				var li = document.createElement("li");
+				li.textContent = purchasedItems[item].name;
+				addedItems.push(purchasedItems[item].name);
+				purchaseList.appendChild(li);
+			}
 		});
 	}
 
