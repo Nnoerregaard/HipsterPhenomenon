@@ -12,7 +12,7 @@ Remember the "" around the commit message.
 LINJE 3: git pull: Pulls the latest version of the project from GitHub. VERY IMPORTANT if someone changes something while you were working.
 Therefore DON'T forget to pull before you push to avoid conflicting versions on github  
 LINJE 4: git push: sends your package from your outbox to GitHub so that the central version of the code is updated on the internet
-*/
+ */
 
 package dk.cs.dwebtek;
 
@@ -40,7 +40,7 @@ import javax.ws.rs.core.Context;
 @Path("shop")
 public class ShopService{
 
-	
+
 	private Namespace ns;
 	private String schemaPath;
 	private XMLOutputter outputter;
@@ -50,15 +50,15 @@ public class ShopService{
 	/*
 	 * This is the constructor which initializes all the field variables we need. It works as a constructor because it has the PostConstruct annotation
 	 */
-	
+
 	public ShopService(@Context ServletContext session){
 		schemaPath = session.getRealPath("WEB-INF/cloud.xsd");
 	}
-	
+
 	/*
 	 * A dummy constructor allowing us to debug using the debugClass
 	 */
-	
+
 	public ShopService() {
 		init(); //It calls init to initialize the right values
 	}
@@ -70,11 +70,11 @@ public class ShopService{
 		b = new SAXBuilder();
 		shopKey = "E445247AA36C3E7174F5611B";
 	}
-	
+
 	/*
 	 * This method retreives all the shops from the cloud server and returns them as a string representation containing their name and URL
 	 */
-	
+
 	@GET
 	@Path("showShops") 
 	public String showShops(){
@@ -92,10 +92,10 @@ public class ShopService{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return returnArray.toString();
 	}
-	
+
 	/*
 	 * This method is supposed to return a string representation of a JSON array containing all the products you have bought so far. Right now it causes an exception so
 	 * do not call it at the moment
@@ -114,15 +114,17 @@ public class ShopService{
 			for (Element el : items){
 				if(e.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))) {
 					itemName = el.getChildText("itemName", ns);
-					JSONObject o = new JSONObject();
-					o.put("name", itemName);
-					array.put(o);
+					if (!array.toString().contains(itemName)){
+						JSONObject o = new JSONObject();
+						o.put("name", itemName);
+						array.put(o);
+					}
 				}
 			}
 		}
-	return array.toString();	
+		return array.toString();	
 	}
-	
+
 	/*
 	 * Method for creating new customers. Is called if the customer wants to create a new account. If something goes wrong or the username/password
 	 * does not fulfill the servers requirement false is sent to JavaScript. Then our JavaScript can act accordingly.
@@ -216,7 +218,7 @@ public class ShopService{
 			return false;
 		}
 	}
-	
+
 	/*
 	 * Takes all the items currently on the sever that are not deleted and returns them as a JSON array turned into a string. The reason
 	 * we use a JSON array is that it is easier to work with in JavaScript
@@ -232,8 +234,8 @@ public class ShopService{
 			o.put("itemPrice", item.getChildText("itemPrice", ns));
 			o.put("itemStock", item.getChildText("itemStock", ns));
 			o.put("itemURL", item.getChildText("itemURL", ns));
-			
-			 //Takes item description, transforms it to valid HTML5 and adds it to the JSON array	
+
+			//Takes item description, transforms it to valid HTML5 and adds it to the JSON array	
 			Element description = item.getChild("itemDescription", ns).getChild("document", ns);
 			description = transformDocumentTags(description);
 			description.setName("p");
@@ -241,13 +243,13 @@ public class ShopService{
 			Format f = Format.getRawFormat().setOmitEncoding(true);
 			XMLOutputter xmlOut = new XMLOutputter(f);
 			String outputDescription = xmlOut.outputString(description);
-			
+
 			o.put("itemDescription", outputDescription);
 			array.put(o);
 		}
 		return array.toString();
 	}
-	
+
 	/* 
 	 * |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 	 * Here the private helper methods start and the public interface of the class ends
@@ -278,24 +280,24 @@ public class ShopService{
 		}	
 		return "";
 	}
-	
+
 	/*
 	 * A private helper method that returns all the purchases a given customer has made in our shop
 	 */
-	
+
 	private List<Element> getCustomerPurchases(String customerName){
 		String customerID = getCustomerID(customerName);
 		HttpURLConnection connection = connect("GET", "listCustomerSales?customerID=" + customerID);
 		try {
 			Document d = b.build(connection.getInputStream());
 			return d.getRootElement().getChildren("sale", ns);
-			
+
 		} catch (JDOMException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
 
 	/*
@@ -360,7 +362,7 @@ public class ShopService{
 		}	
 		return connection;
 	}
-	
+
 	/*
 	 * This private help method takes a tag and transforms it into valid HTML5 tags
 	 */

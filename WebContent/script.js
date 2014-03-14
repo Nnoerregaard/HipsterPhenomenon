@@ -141,6 +141,7 @@ $(function() {
 			resetFields();
 		}
 	});
+});
 	/*
 	 * This is the central object in our JavaScript. It contains all the information we need above the customer. It is used throughout our JavaScript code!
 	 */
@@ -160,7 +161,6 @@ $(function() {
 		document.getElementById("usernameField").value = "";
 		document.getElementById("passwordField").value = "";
 	}
-});
 /*
  * This function adds the items on our server to our view. It also adds the add to cart button and its event handler!
  */
@@ -331,11 +331,9 @@ function createRecommendationView() {
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", toSend, function(response) {
 			purchasedItems = JSON.parse(response);
-			var addedItems = [];
 			for (var item in purchasedItems){
 				var li = document.createElement("li");
 				li.textContent = purchasedItems[item].name;
-				addedItems.push(purchasedItems[item].name);
 				purchaseList.appendChild(li);
 			}
 		});
