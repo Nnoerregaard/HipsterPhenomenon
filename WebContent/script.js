@@ -29,10 +29,11 @@ $(function() {
 	 */
 	sendRequest("GET", "rest/shop/showShops", null, function(response) {
 		response = JSON.parse(response);
-		var i = 0;
 		response.forEach(function(shop) {
-			i++;
-			$("#shopList").append("<option value="+i+">" + shop.Name + "</option>");
+			$("#shopList").append("<option value="+shop.ID+">" + shop.Name + "</option>");
+		});
+		$("#shopList").on("change", function() {
+			console.log(this.value);
 		});
 	});
 	/*

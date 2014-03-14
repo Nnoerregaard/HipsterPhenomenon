@@ -85,7 +85,7 @@ public class ShopService{
 			for (Element e : response.getRootElement().getChildren("shop", ns)) {
 				JSONObject o = new JSONObject();
 				o.put("Name", e.getChildText("shopName", ns));
-				o.put("URL", e.getChildText("shopURL", ns));
+				o.put("ID", e.getChildText("shopID", ns));
 				returnArray.put(o);
 			};
 		} catch (JDOMException | IOException e) {
@@ -109,7 +109,7 @@ public class ShopService{
 		String itemName = "";
 		List<Element> purchases = new ArrayList<Element>();
 		purchases = getCustomerPurchases(currentUser);
-		List<Element> items = getItems(); //The list is retreived here to make the code more efficient
+		List<Element> items = getItems("279"); //The list is retreived here to make the code more efficient
 		
 		for (Element e : purchases){
 			for (Element el : items){
@@ -240,7 +240,7 @@ public class ShopService{
 	@Path("items")
 	public String returnItems(){
 		JSONArray array = new JSONArray();
-		for (Element item : getItems()) {
+		for (Element item : getItems("279")) {
 			JSONObject o = new JSONObject();
 			o.put("itemID", item.getChildText("itemID", ns));
 			o.put("itemName", item.getChildText("itemName", ns));
@@ -273,6 +273,7 @@ public class ShopService{
 	 * A private helper method for transforming a user name (which we get from the JavaScript code) into a customerID (which we need for the
 	 * sellItems call to the cloud)
 	 */
+
 	private String getCustomerID(String username){
 		HttpURLConnection connection = connect("GET", "listCustomers");
 		try {
@@ -316,10 +317,10 @@ public class ShopService{
 	/*
 	 * A private helper method for retrieving all our items from the server minus the ones we have deleted
 	 */  
-	private List<Element> getItems() {
+	private List<Element> getItems(String shopID) {
 		List<Element> returnElements = new ArrayList<Element>();
-		HttpURLConnection deletedItems = connect("GET", "listDeletedItemIDs?shopID=279");
-		HttpURLConnection items = connect("GET", "listItems?shopID=279");
+		HttpURLConnection deletedItems = connect("GET", "listDeletedItemIDs?shopID="+shopID);
+		HttpURLConnection items = connect("GET", "listItems?shopID="+shopID);
 		try {
 			Document doc = b.build(items.getInputStream());
 			Document deleteDoc = b.build(deletedItems.getInputStream());
