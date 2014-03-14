@@ -367,8 +367,16 @@ function createRecommendationView() {
 			}
 		});
 	}
+	
+	//button for geolocation suggestion
+	var button = document.createElement("button");
+	button.textContent="Location suggestions";
+	addEventListener(button, "click", function() {
+		getLocation();
+	});
 
 	frame.appendChild(text);
+	frame.appendChild(button);
 	text.appendChild(description);
 	description.appendChild(purchaseList);
 
@@ -443,14 +451,14 @@ function allowDrop(ev) {
 /*
  * Code for geolocation
  */
-$(function getLocation()
+function getLocation()
 {
 if (navigator.geolocation)
   {
   navigator.geolocation.getCurrentPosition(showPosition, showError);
   }
 else{alert("Geolocation is not supported by this browser.");}
-});
+}
 
 function showPosition(position)
 {

@@ -155,7 +155,7 @@ public class ShopService{
 		try {
 			HttpURLConnection connection = connect("POST", "createCustomer");
 			Validator.validateXML(d, Paths.get(schemaPath, "")); //We validate our XML to make the cloud server happy! :)
-			outputter.output(d, connection.getOutputStream());
+			outputter.output(d, connection.getOutputStream());			
 			if (connection.getResponseCode() == 200) return true;
 			else return false;
 		} catch (IOException | JDOMException e) {
