@@ -128,7 +128,6 @@ public class ShopService{
 								saleAmount += Integer.parseInt(element.getChildText("saleAmount", ns));
 							}
 						}
-						
 						o.put("amount", saleAmount.toString());
 						array.put(o);
 					}
