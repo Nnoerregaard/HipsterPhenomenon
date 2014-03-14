@@ -21,9 +21,9 @@ $(function() {
 	sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
 		// This code is called when the server has sent its data. It calls the method building the view on the site	
 		var items = JSON.parse(itemsText);
-		addItemsToTable(items);
+		addItemsToTable(items, "279");
 	});
-	
+
 	/*
 	 * Adds shops to the topbar
 	 */
@@ -93,10 +93,10 @@ $(function() {
 				customer.amountSold += product.Amount;
 				sendRequest("POST", "rest/shop/sell", toSend, function(saleResponse) {
 					if (saleResponse === "true") {
-						sendRequest("GET", "rest/shop/items", null, function(itemsText) {
+						sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
 							// Updates the view after purchase
 							var items = JSON.parse(itemsText);
-							addItemsToTable(items);
+							addItemsToTable(items, "279");
 						});
 						//This else is executed if the purchase did not succeed!
 					} else {
@@ -155,29 +155,29 @@ $(function() {
 		}
 	});
 });
-	/*
-	 * This is the central object in our JavaScript. It contains all the information we need above the customer. It is used throughout our JavaScript code!
-	 */
-	var customer = {
-			loggedIn: false,
-			amountSold: 0,
-			cart: [],
-			totalPrice: 0,
-			username: ""
-	};
-	function reset() {
-		customer.cart = [];
-		customer.totalPrice = 0;
-		customer.amountSold = 0;
-	}
-	function resetFields() {
-		document.getElementById("usernameField").value = "";
-		document.getElementById("passwordField").value = "";
-	}
+/*
+ * This is the central object in our JavaScript. It contains all the information we need above the customer. It is used throughout our JavaScript code!
+ */
+var customer = {
+		loggedIn: false,
+		amountSold: 0,
+		cart: [],
+		totalPrice: 0,
+		username: ""
+};
+function reset() {
+	customer.cart = [];
+	customer.totalPrice = 0;
+	customer.amountSold = 0;
+}
+function resetFields() {
+	$("#usernameField").val("");
+	$("#passwordField").val("");
+}
 /*
  * This function adds the items on our server to our view. It also adds the add to cart button and its event handler!
  */
-function addItemsToTable(items) {
+function addItemsToTable(items, shopID) {
 	// Get the table body we we can add items to it
 	var container = document.getElementById("productcontainer");
 	// Remove all contents of the table body (if any exist)
@@ -246,70 +246,73 @@ function addItemsToTable(items) {
 		stockRow.appendChild(stockCell);
 
 		table.appendChild(stockRow);
-
-		//inCart
-		var inCartRow = document.createElement("tr");
-		var inCartLabelCell = document.createElement("td");
-		var inCartLabel = document.createElement("h6");
-		inCartLabel.textContent = "In cart:";
-		inCartLabelCell.appendChild(inCartLabel);
-		inCartRow.appendChild(inCartLabelCell);
-
-		var inCartCell = document.createElement("td");
-		var inCart = document.createElement("h6");
-		inCart.setAttribute("id", item.itemID + "inCart");
-		inCart.textContent = 0;
-		inCartCell.appendChild(inCart);
-		inCartRow.appendChild(inCartCell);
-
-		table.appendChild(inCartRow);
-
-		//The buy button
-		var buttonRow = document.createElement("tr");
-		var buttonCell = document.createElement("td");
-
-		var addButton = document.createElement("input");
-		addButton.setAttribute("type", "button");
-		addButton.setAttribute("value", "Add to cart");
-
-
+		
 		/*
-		 * Hides the add to chart button and displays the out of stock message if there is no more items in stock!
+		 * Only add this part if we are looking at the shop hipsterPhenomenon
 		 */
 
-		if(parseInt(item.itemStock) == 0) {
-			addButton.style.visibility = "hidden";
-			buttonCell.textContent = "Out of stock";
+		if (shopID == "279"){
+
+			//inCart
+			var inCartRow = document.createElement("tr");
+			var inCartLabelCell = document.createElement("td");
+			var inCartLabel = document.createElement("h6");
+			inCartLabel.textContent = "In cart:";
+			inCartLabelCell.appendChild(inCartLabel);
+			inCartRow.appendChild(inCartLabelCell);
+
+			var inCartCell = document.createElement("td");
+			var inCart = document.createElement("h6");
+			inCart.setAttribute("id", item.itemID + "inCart");
+			inCart.textContent = 0;
+			inCartCell.appendChild(inCart);
+			inCartRow.appendChild(inCartCell);
+
+			table.appendChild(inCartRow);
+
+			//The buy button
+			var buttonRow = document.createElement("tr");
+			var buttonCell = document.createElement("td");
+
+			var addButton = document.createElement("input");
+			addButton.setAttribute("type", "button");
+			addButton.setAttribute("value", "Add to cart");
+
+
+			/*
+			 * Hides the add to chart button and displays the out of stock message if there is no more items in stock!
+			 */
+
+			if(parseInt(item.itemStock) == 0) {
+				addButton.style.visibility = "hidden";
+				buttonCell.textContent = "Out of stock";
+			}
+
+			/*
+			 * An event listener for our drag functionality. We pased on information about itemID, itemPrice and itemStock needed to add the item to the cart. This infomation
+			 * can then be read in our drop handler. We add an unique drag handler for each object on the page
+			 * Method inspired by http://stackoverflow.com/questions/15839649/pass-object-through-datatransfer
+			 */
+
+			frame.addEventListener("dragstart", function(event) {
+				var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
+				JSONDragInformation = JSON.stringify(dragInformation);
+				event.dataTransfer.setData("Information", JSONDragInformation);
+			});
+
+			/*
+			 * This event listener is added for each add to chart button in turn when the view is build
+			 */
+			addEventListener(addButton, "click", function (){
+				addItemToCart(item.itemStock, item.itemID, item.itemPrice);
+			});
+
+			//appending the addButton
+			buttonCell.appendChild(addButton);
+			buttonRow.appendChild(buttonCell);
+			table.appendChild(buttonRow);
+
 		}
-
-		/*
-		 * An event listener for our drag functionality. We pased on information about itemID, itemPrice and itemStock needed to add the item to the cart. This infomation
-		 * can then be read in our drop handler. We add an unique drag handler for each object on the page
-		 * Method inspired by http://stackoverflow.com/questions/15839649/pass-object-through-datatransfer
-		 */
-
-		frame.addEventListener("dragstart", function(event) {
-			var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
-			JSONDragInformation = JSON.stringify(dragInformation);
-			event.dataTransfer.setData("Information", JSONDragInformation);
-		});
-
-		/*
-		 * This event listener is added for each add to chart button in turn when the view is build
-		 */
-		addEventListener(addButton, "click", function (){
-			addItemToCart(item.itemStock, item.itemID, item.itemPrice);
-		});
-
-		/*
-		 * A function that adds items to the shopping cart
-		 */
-
-
-		//appending the addButton
-		buttonCell.appendChild(addButton);
-		buttonRow.appendChild(buttonCell);
-		table.appendChild(buttonRow);
 
 		//last appending in the info div
 		info.appendChild(table);
