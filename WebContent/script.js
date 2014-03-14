@@ -333,7 +333,7 @@ function createRecommendationView() {
 			purchasedItems = JSON.parse(response);
 			for (var item in purchasedItems){
 				var li = document.createElement("li");
-				li.textContent = purchasedItems[item].name;
+				li.textContent = purchasedItems[item].amount;
 				purchaseList.appendChild(li);
 			}
 		});

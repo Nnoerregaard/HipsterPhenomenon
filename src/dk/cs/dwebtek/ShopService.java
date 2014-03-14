@@ -117,7 +117,18 @@ public class ShopService{
 					if (!array.toString().contains(itemName)){
 						JSONObject o = new JSONObject();
 						o.put("name", itemName);
-						o.put("amount", e.getChildText("saleAmount", ns));
+						Integer saleAmount = 0;
+						/*
+						 * Find the correct amount for the current purchase by looking through all previous purchase. When the same
+						 * item has been purchased the variabel saleAmount is counted up with the value of the newly discovered purchase
+						 */
+						for (Element element : purchases){
+							if (element.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))){
+								saleAmount += Integer.parseInt(element.getChildText("saleAmount", ns));
+							}
+						}
+						
+						o.put("amount", saleAmount.toString());
 						array.put(o);
 					}
 				}
