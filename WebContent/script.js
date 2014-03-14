@@ -160,6 +160,7 @@ $(function() {
 		}
 	});
 });
+
 /*
  * This is the central object in our JavaScript. It contains all the information we need above the customer. It is used throughout our JavaScript code!
  */
@@ -179,7 +180,9 @@ function resetFields() {
 	$("#usernameField").val("");
 	$("#passwordField").val("");
 }
+
 var shoppingCart = "<img id= \"shoppingCart\"src=http://www.iaatkfoundation.org/v/vspfiles/templates/Adam/images/template/shopping_cart.png />";
+
 /*
  * This function adds the items on our server to our view. It also adds the add to cart button and its event handler!
  */
@@ -447,6 +450,43 @@ function dragAway() {
 	$("#totalPrice").css("color", "yellow");
 }
 
+
+/*
+ * Code for geolocation
+ */
+$(function getLocation()
+{
+if (navigator.geolocation)
+  {
+  navigator.geolocation.getCurrentPosition(showPosition, showError);
+  }
+else{alert("Geolocation is not supported by this browser.");}
+});
+
+function showPosition(position)
+{
+alert("Latitude: " + position.coords.latitude + 
+"<br>Longitude: " + position.coords.longitude); 
+}
+
+function showError(error)
+{
+switch(error.code) 
+  {
+  case error.PERMISSION_DENIED:
+    alert("User denied the request for Geolocation.");
+    break;
+  case error.POSITION_UNAVAILABLE:
+    alert("Location information is unavailable.");
+    break;
+  case error.TIMEOUT:
+    alert("The request to get user location timed out.");
+    break;
+  case error.UNKNOWN_ERROR:
+    alert("An unknown error occurred.");
+    break;
+  }
+}
 
 /////////////////////////////////////////////////////
 //Code from slides
