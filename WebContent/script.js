@@ -379,11 +379,22 @@ function createRecommendationView() {
 
 	//button for geolocation suggestion
 	var button = document.createElement("button");
-	button.style.float = "right";
 	button.textContent="Location suggestions";
 	addEventListener(button, "click", function() {
 		getLocation();
 	});
+
+	frame.appendChild(text);
+	frame.appendChild(button);
+	//text.appendChild(description);
+	//description.appendChild(purchaseList);
+
+	//Info
+	var info = document.createElement("div");
+	info.setAttribute("class", "productInfo");
+
+	frame.appendChild(info);
+	container.appendChild(frame);
 }
 
 /*
