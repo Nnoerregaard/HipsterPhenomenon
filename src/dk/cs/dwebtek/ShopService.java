@@ -110,9 +110,25 @@ public class ShopService{
 
 		ArrayList<PurchasedItem> soldItems = getSoldItems();
 		List<Element> itemsOnServer = getItems("279");
-		for (PurchasedItem soldItem : soldItems){
-			ArrayList<Element> itemsForDeletion = new ArrayList<Element>();
-			
+		ArrayList<Element> itemsForDeletion = new ArrayList<Element>();
+		
+		/*
+		 * Don't suggest a product to the customer that he/she has already bought
+		 */
+		
+		for (PurchasedItem item : soldItems) {
+			for (Element e : itemsOnServer){
+				if (item.getName().equals(e.getChildText("itemName", ns))){
+					itemsForDeletion.add(e);
+				}
+			}
+		}
+		
+		for (Element e : itemsForDeletion){
+			itemsOnServer.remove(e);
+		}
+
+		for (PurchasedItem soldItem : soldItems){	
 			/*
 			 * Here we check the 4 keywords, shoe, jacket, tshirt/t-shirt and jeans/trousers which we have hardcoded.
 			 */
