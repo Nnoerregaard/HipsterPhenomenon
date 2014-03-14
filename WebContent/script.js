@@ -5,7 +5,7 @@ IF YOU ARE USING WINDOWS THEN USE GIT COMMAND SHELL INSTEAD OF THE STANDARD WIND
 REMEMBER TO PULL BEFORE YOU START WORKING ON ANYTHING!
 LINE 1: git add -A: Add everything you have changed to a new package that you can put in your outbox in the next step. -A means all files.
 It is easiest to add all files even though you have change one or a few files.
-LINE 2: git commit -m "commit message": Add the package you made in the previous step to your outbox.
+LINE 2: git commit -m "commit message": Adds the package you made in the previous step to your outbox.
 It is important because otherwise your code will be overwritten when you conduct pull in the next line 
 Remember the "" around the commit message. 
 (The message has to be there and it would be nice if you make it informativ telling what you have changed in the commit)
@@ -22,6 +22,18 @@ $(function() {
 		// This code is called when the server has sent its data. It calls the method building the view on the site	
 		var items = JSON.parse(itemsText);
 		addItemsToTable(items);
+	});
+	
+	/*
+	 * Adds shops to the topbar
+	 */
+	sendRequest("GET", "rest/shop/showShops", null, function(response) {
+		response = JSON.parse(response);
+		var i = 0;
+		response.forEach(function(shop) {
+			i++;
+			$("#shopList").append("<option value="+i+">" + shop.Name + "</option>");
+		});
 	});
 	/*
 	 * Adds the event handler to the login button. Reads the user name and password field, sends it to the server and logs the user in if the login is right.

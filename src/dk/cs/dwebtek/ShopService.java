@@ -110,6 +110,7 @@ public class ShopService{
 		List<Element> purchases = new ArrayList<Element>();
 		purchases = getCustomerPurchases(currentUser);
 		List<Element> items = getItems(); //The list is retreived here to make the code more efficient
+		
 		for (Element e : purchases){
 			for (Element el : items){
 				if(e.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))) {
