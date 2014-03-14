@@ -97,46 +97,36 @@ public class ShopService{
 	}
 
 	/*
-	 * This method is supposed to return a string representation of a JSON array containing all the products you have bought so far. Right now it causes an exception so
-	 * do not call it at the moment
+	 * This method is supposed to return a string representation of a JSON array containing all the products you suggest you based on what you have previously bought.
+	 * It does not work yet however
 	 */
 
 	@GET
 	@Path("purchases")
-	public String returnSoldItems(){
-		String currentUser = (String) serverData.getAttribute("username");
+	public String returnSuggestions(){
 		JSONArray array = new JSONArray();
-		String itemName = "";
-		List<Element> purchases = new ArrayList<Element>();
-		purchases = getCustomerPurchases(currentUser);
-		List<Element> items = getItems("279"); //The list is retreived here to make the code more efficient
 		
-		for (Element e : purchases){
-			for (Element el : items){
-				if(e.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))) {
-					itemName = el.getChildText("itemName", ns);
-					if (!array.toString().contains(itemName)){
-						JSONObject o = new JSONObject();
-						o.put("name", itemName);
-						Integer saleAmount = 0;
-						/*
-						 * Find the correct amount for the current purchase by looking through all previous purchase. When the same
-						 * item has been purchased the variabel saleAmount is counted up with the value of the newly discovered purchase
-						 */
-						for (Element element : purchases){
-							if (element.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))){
-								saleAmount += Integer.parseInt(element.getChildText("saleAmount", ns));
-							}
+		ArrayList<PurchasedItem> soldItems = getSoldItems();
+		List<Element> itemsOnServer = getItems("279");
+		for (PurchasedItem soldItem : soldItems){
+			JSONObject o = new JSONObject();
+			if (soldItem.getName().contains("shoe")){
+				for (Element serverItem : itemsOnServer){
+					if (serverItem.getChildText("itemName", ns).contains("shoe")){
+						if(!o.has(serverItem.getChildText("itemID", ns))){
+							o.put("itemID", serverItem.getChildText("itemID", ns));
+							array.put(o);
 						}
-						o.put("amount", saleAmount.toString());
-						array.put(o);
 					}
 				}
 			}
 		}
-		return array.toString();	
+		System.out.println(array.toString());
+		return array.toString();
+		
 	}
-
+	
+	
 	/*
 	 * Method for creating new customers. Is called if the customer wants to create a new account. If something goes wrong or the username/password
 	 * does not fulfill the servers requirement false is sent to JavaScript. Then our JavaScript can act accordingly.
@@ -404,4 +394,43 @@ public class ShopService{
 
 		return documentElement; //Returns the HTML5 optimized element
 	}
+	
+	/*
+	 * Returns a list containing the items the user which is currently logged in has bought in increasing order. It has no duplications
+	 */
+	
+	private ArrayList<PurchasedItem> getSoldItems(){
+		String currentUser = (String) serverData.getAttribute("username");
+		String itemName = "";
+		List<Element> purchases = new ArrayList<Element>();
+		purchases = getCustomerPurchases(currentUser);
+		List<Element> items = getItems("279"); //The list is retreived here to make the code more efficient
+		ArrayList<PurchasedItem> purchasedItems = new ArrayList<PurchasedItem>();
+
+		for (Element e : purchases){
+			for (Element el : items){
+				if(e.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))) {
+					itemName = el.getChildText("itemName", ns);
+					if (!PurchasedItem.containsName(purchasedItems, itemName)){
+						Integer saleAmount = 0;
+						/*
+						 * Find the correct amount for the current purchase by looking through all previous purchase. When the same
+						 * item has been purchased the variabel saleAmount is counted up with the value of the newly discovered purchase
+						 */
+						for (Element element : purchases){
+							if (element.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))){
+								saleAmount += Integer.parseInt(element.getChildText("saleAmount", ns));
+							}
+						}
+						PurchasedItem item = new PurchasedItem(itemName, saleAmount);
+						purchasedItems.add(item);
+					}
+				}
+			}
+		}
+		Collections.sort(purchasedItems);
+
+		return purchasedItems;	
+	}
+
 }

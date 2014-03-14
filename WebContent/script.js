@@ -358,14 +358,12 @@ function createRecommendationView() {
 	//This should never be called if the user is not logged in, but to be safe we check it here
 	var purchaseList = document.createElement("ul");
 	purchaseList.style.overflow = "scroll";
+	var sortedArray = [];
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", toSend, function(response) {
 			purchasedItems = JSON.parse(response);
-			for (var item in purchasedItems){
-				var li = document.createElement("li");
-				li.textContent = purchasedItems[item].amount;
-				purchaseList.appendChild(li);
-			}
+			
+			
 		});
 	}
 	
