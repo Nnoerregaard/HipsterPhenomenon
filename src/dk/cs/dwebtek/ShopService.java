@@ -238,9 +238,9 @@ public class ShopService{
 	 */  
 	@GET
 	@Path("items")
-	public String returnItems(){
+	public String returnItems(@QueryParam ("ID") String shopID){
 		JSONArray array = new JSONArray();
-		for (Element item : getItems("279")) {
+		for (Element item : getItems(shopID)) {
 			JSONObject o = new JSONObject();
 			o.put("itemID", item.getChildText("itemID", ns));
 			o.put("itemName", item.getChildText("itemName", ns));

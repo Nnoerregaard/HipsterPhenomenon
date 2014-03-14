@@ -18,7 +18,7 @@ LINJE 4: git push: sends your package from your outbox to GitHub so that the cen
 $(function() {	
 	// Request items from the server. The server expects no request body, so we
 	// set it to null
-	sendRequest("GET", "rest/shop/items", null, function(itemsText) {
+	sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
 		// This code is called when the server has sent its data. It calls the method building the view on the site	
 		var items = JSON.parse(itemsText);
 		addItemsToTable(items);
