@@ -102,6 +102,7 @@ $(function() {
 							// Updates the view after purchase
 							var items = JSON.parse(itemsText);
 							addItemsToTable(items, "279");
+							createRecommendationView();
 						});
 						//This else is executed if the purchase did not succeed!
 					} else {
