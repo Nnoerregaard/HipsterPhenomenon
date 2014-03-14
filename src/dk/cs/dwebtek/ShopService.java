@@ -100,33 +100,84 @@ public class ShopService{
 	 * This method is supposed to return a string representation of a JSON array containing all the products you suggest you based on what you have previously bought.
 	 * It does not work yet however
 	 */
+	
+
 
 	@GET
 	@Path("purchases")
 	public String returnSuggestions(){
 		JSONArray array = new JSONArray();
-		
+
 		ArrayList<PurchasedItem> soldItems = getSoldItems();
 		List<Element> itemsOnServer = getItems("279");
 		for (PurchasedItem soldItem : soldItems){
-			JSONObject o = new JSONObject();
-			if (soldItem.getName().contains("shoe")){
+			ArrayList<Element> itemsForDeletion = new ArrayList<Element>();
+			
+			/*
+			 * Here we check the 4 keywords, shoe, jacket, tshirt/t-shirt and jeans/trousers which we have hardcoded.
+			 */
+			String purchasedItem = soldItem.getName().toLowerCase(); //Ensures that we don't get case problems
+			
+			if (purchasedItem.contains("shoe")){
 				for (Element serverItem : itemsOnServer){
-					if (serverItem.getChildText("itemName", ns).contains("shoe")){
-						if(!o.has(serverItem.getChildText("itemID", ns))){
-							o.put("itemID", serverItem.getChildText("itemID", ns));
-							array.put(o);
-						}
+					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
+					if (itemOnServer.contains("shoe")){
+						JSONObject o = new JSONObject();
+						o.put("itemID", serverItem.getChildText("itemID", ns));
+						array.put(o);
+						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
 					}
 				}
+			}
+			if (purchasedItem.contains("jacket")){
+				for (Element serverItem : itemsOnServer){
+					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
+					if (itemOnServer.contains("jacket")){
+						JSONObject o = new JSONObject();
+						o.put("itemID", serverItem.getChildText("itemID", ns));
+						array.put(o);
+						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
+					}
+				}
+
+			}
+			if (purchasedItem.contains("tshirt") || purchasedItem.contains("t-shirt")){
+				for (Element serverItem : itemsOnServer){
+					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
+					if (itemOnServer.contains("tshirt") || itemOnServer.contains("t-shirt")){
+						JSONObject o = new JSONObject();
+						o.put("itemID", serverItem.getChildText("itemID", ns));
+						array.put(o);
+						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
+					}
+				}
+
+			}
+			if (purchasedItem.contains("jeans") || purchasedItem.contains("trousers")){
+				for (Element serverItem : itemsOnServer){
+					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
+					if (itemOnServer.contains("jeans") || itemOnServer.contains("trousers")){
+						JSONObject o = new JSONObject();
+						o.put("itemID", serverItem.getChildText("itemID", ns));
+						array.put(o);
+						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
+					}
+				}
+			}
+			
+			/*
+			 * Here we actually delete the elements so they are not suggested more than once. It has to be done outside the for each
+			 * loop because otherwise we get a concurrent error!
+			 */
+			
+			for (Element e : itemsForDeletion){
+				itemsOnServer.remove(e);
 			}
 		}
 		System.out.println(array.toString());
 		return array.toString();
-		
 	}
-	
-	
+
 	/*
 	 * Method for creating new customers. Is called if the customer wants to create a new account. If something goes wrong or the username/password
 	 * does not fulfill the servers requirement false is sent to JavaScript. Then our JavaScript can act accordingly.
@@ -394,11 +445,11 @@ public class ShopService{
 
 		return documentElement; //Returns the HTML5 optimized element
 	}
-	
+
 	/*
 	 * Returns a list containing the items the user which is currently logged in has bought in increasing order. It has no duplications
 	 */
-	
+
 	private ArrayList<PurchasedItem> getSoldItems(){
 		String currentUser = (String) serverData.getAttribute("username");
 		String itemName = "";
@@ -429,7 +480,9 @@ public class ShopService{
 			}
 		}
 		Collections.sort(purchasedItems);
-
+		for (PurchasedItem item : purchasedItems){
+			System.out.println("Name: " + item.getName() + "Amount sold: " + item.getAmount());
+		}
 		return purchasedItems;	
 	}
 

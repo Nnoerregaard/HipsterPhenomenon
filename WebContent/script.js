@@ -353,16 +353,13 @@ function createRecommendationView() {
 	pHeader.textContent = "You have previously bought";
 	text.appendChild(pHeader);
 	var description = document.createElement("div");
-	var toSend = "name=" + encodeURIComponent(customer.username);
 	//The retrival of purchases only work if the customer is logged in because otherwise the serverData variable on the server is not set and we get a nullPointerException
 	//This should never be called if the user is not logged in, but to be safe we check it here
 	var purchaseList = document.createElement("ul");
 	purchaseList.style.overflow = "scroll";
 	var sortedArray = [];
 	if (customer.loggedIn){
-		sendRequest("GET", "rest/shop/purchases", toSend, function(response) {
-			purchasedItems = JSON.parse(response);
-			
+		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
 			
 		});
 	}
