@@ -215,8 +215,8 @@ public class ShopService{
 		root.addContent(new Element("customerName", ns).setText(name));
 		root.addContent(new Element("customerPass", ns).setText(password));
 		try {
-			outputter.output(d, connection.getOutputStream());
 			Validator.validateXML(d, Paths.get(schemaPath, "")); //We validate our XML to make the cloud server happy! :)
+			outputter.output(d, connection.getOutputStream());
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200){
 				serverData.setAttribute("username", name);

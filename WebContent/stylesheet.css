@@ -228,7 +228,7 @@ because of the opacity property*/
 /*This describes the image for the products*/
 
 .productimage {
-	width: auto;
+	width: 9.9em;
 	height: 9.9em;
 	margin: .625em;
 	background-size: 100%;
@@ -242,6 +242,7 @@ because of the opacity property*/
 	margin: .6em 0;
 	width: 15em;
 	height: 80%;
+	overflow: scroll;
 }
 
 .productText p {
