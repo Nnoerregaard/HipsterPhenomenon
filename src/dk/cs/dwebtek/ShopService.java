@@ -46,6 +46,7 @@ public class ShopService{
 	private XMLOutputter outputter;
 	private SAXBuilder b;
 	private String shopKey;
+	private List<Element> itemsOnServer; //Optimization. We only get through all the elements on the server once per page refresh
 	@Context ServletContext serverData;
 	/*
 	 * This is the constructor which initializes all the field variables we need. It works as a constructor because it has the PostConstruct annotation
@@ -69,6 +70,7 @@ public class ShopService{
 		outputter = new XMLOutputter();
 		b = new SAXBuilder();
 		shopKey = "E445247AA36C3E7174F5611B";
+		itemsOnServer = getItems("279");
 	}
 
 	/*
@@ -107,7 +109,6 @@ public class ShopService{
 		JSONArray array = new JSONArray();
 
 		ArrayList<PurchasedItem> soldItems = getSoldItems();
-		List<Element> itemsOnServer = getItems("279");
 		ArrayList<Element> itemsForDeletion = new ArrayList<Element>();
 		
 		/*
@@ -288,6 +289,7 @@ public class ShopService{
 	@Consumes("application/x-www-form-urlencoded")
 	@Path("login")
 	public boolean login(@FormParam("username") String name, @FormParam("password") String password){
+		
 		Document d = new Document();
 		HttpURLConnection connection = connect("POST", "login");
 		d.setRootElement(new Element("login", ns));
@@ -300,6 +302,7 @@ public class ShopService{
 			outputter.output(d, connection.getOutputStream());
 			int responseCode = connection.getResponseCode();
 			if (responseCode == 200){
+				name = name.toLowerCase();
 				serverData.setAttribute("username", name);
 				return true;
 			}
@@ -321,7 +324,10 @@ public class ShopService{
 	@Path("items")
 	public String returnItems(@QueryParam ("ID") String shopID){
 		JSONArray array = new JSONArray();
-		for (Element item : getItems(shopID)) {
+		List<Element> items;
+		if (shopID.equals("279")) items = itemsOnServer;
+		else items = getItems(shopID);
+		for (Element item : items) {
 			JSONObject o = new JSONObject();
 			o.put("itemID", item.getChildText("itemID", ns));
 			o.put("itemName", item.getChildText("itemName", ns));
@@ -362,7 +368,8 @@ public class ShopService{
 			connection.getResponseCode();
 			List<Element> customers = d.getRootElement().getChildren();
 			for(Element customer : customers) {
-				if(customer.getChildText("customerName", ns).equals(username)) {
+				String customerName = customer.getChildText("customerName", ns).toLowerCase();
+				if(customerName.equals(username)) {
 					return customer.getChildText("customerID", ns);
 				}
 			}
@@ -496,11 +503,10 @@ public class ShopService{
 		String itemName = "";
 		List<Element> purchases = new ArrayList<Element>();
 		purchases = getCustomerPurchases(currentUser);
-		List<Element> items = getItems("279"); //The list is retreived here to make the code more efficient
 		ArrayList<PurchasedItem> purchasedItems = new ArrayList<PurchasedItem>();
 
 		for (Element e : purchases){
-			for (Element el : items){
+			for (Element el : itemsOnServer){
 				if(e.getChildText("itemID", ns).equals(el.getChildText("itemID", ns))) {
 					itemName = el.getChildText("itemName", ns);
 					if (!PurchasedItem.containsName(purchasedItems, itemName)){
