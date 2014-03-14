@@ -348,37 +348,46 @@ function createRecommendationView() {
 	frame.setAttribute("class", "suggestionframe");
 
 	//Previous purchases and previous purchases headline
+	var button = document.createElement("button");
 	var text = document.createElement("div");
 	var pHeader = document.createElement("h5");
 	pHeader.textContent = "Based on your previous purchases, we suggest";
 	text.appendChild(pHeader);
+	text.appendChild(button);
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
 			suggestedItems = JSON.parse(response);
 			suggestedItems.forEach(function(item) {
+				var suggestedItem = document.createElement("div");
+				suggestedItem.setAttribute("class", "suggestItemDiv");
 				
-				var pHeader = document.createElement("h5");
-				pHeader.textContent = item.itemName;
+				var header = document.createElement("h5");
+				header.textContent = item.itemName;
 				
-				var imgHolder = document.createElement("div");
 				var img = document.createElement("img");
 				img.setAttribute("class", "productimage");
 				img.setAttribute("alt", item.itemName);
 				img.setAttribute("src", item.itemURL);
-				imgHolder.appendChild(img);
 				
 				var addButton = document.createElement("input");
 				addButton.setAttribute("type", "button");
 				addButton.setAttribute("value", "Add to cart");
-				frame.appendChild(imgHolder);
-				frame.appendChild(addButton);
+				suggestedItem.appendChild(header);
+				suggestedItem.appendChild(img);
+				suggestedItem.appendChild(addButton);
+				
+				addEventListener(addButton, "click", function(){
+					addItemToCart(item.itemStock, item.itemID, item.itemPrice);
+				});
+				
+				frame.appendChild(suggestedItem);
 			});
 
 		});
 	}
 
 	//button for geolocation suggestion
-	var button = document.createElement("button");
+	button.style.float = "right";
 	button.textContent="Location suggestions";
 	addEventListener(button, "click", function() {
 		getLocation();
