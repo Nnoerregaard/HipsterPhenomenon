@@ -111,7 +111,11 @@ when scrolling*/
 #feedback {
 	float: left;
 	color:yellow;
-	margin-left: 17.9em;
+	margin-left: 3.1em;
+}
+#shoppingCart {
+	width: 20px;
+	height: 20px;
 }
 
 #totalPrice {
