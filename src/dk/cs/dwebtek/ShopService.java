@@ -97,12 +97,10 @@ public class ShopService{
 	}
 
 	/*
-	 * This method is supposed to return a string representation of a JSON array containing all the products you suggest you based on what you have previously bought.
-	 * It does not work yet however
+	 * This method returns a string representation of a JSON array containing all the products you are suggested based on what you have previously bought.
+	 * 
 	 */
 	
-
-
 	@GET
 	@Path("purchases")
 	public String returnSuggestions(){
@@ -113,12 +111,13 @@ public class ShopService{
 		ArrayList<Element> itemsForDeletion = new ArrayList<Element>();
 		
 		/*
-		 * Don't suggest a product to the customer that he/she has already bought
+		 * Don't suggest a product to the customer that he/she has already bought or one which is not in stock
 		 */
 		
 		for (PurchasedItem item : soldItems) {
 			for (Element e : itemsOnServer){
-				if (item.getName().equals(e.getChildText("itemName", ns))){
+				int itemStock = Integer.parseInt(e.getChildText("itemStock", ns));
+				if (item.getName().equals(e.getChildText("itemName", ns)) || itemStock == 0){
 					itemsForDeletion.add(e);
 				}
 			}
@@ -128,10 +127,13 @@ public class ShopService{
 			itemsOnServer.remove(e);
 		}
 
-		for (PurchasedItem soldItem : soldItems){	
+		for (PurchasedItem soldItem : soldItems){
+			//We want max four suggestions
+			if (array.length() == 4) break;
 			/*
 			 * Here we check the 4 keywords, shoe, jacket, tshirt/t-shirt and jeans/trousers which we have hardcoded.
 			 */
+			
 			String purchasedItem = soldItem.getName().toLowerCase(); //Ensures that we don't get case problems
 			
 			if (purchasedItem.contains("shoe")){
@@ -139,10 +141,15 @@ public class ShopService{
 					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
 					if (itemOnServer.contains("shoe")){
 						JSONObject o = new JSONObject();
+						o.put("itemURL", serverItem.getChildText("itemURL", ns));
+						o.put("itemStock", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
 						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
 					}
+					
 				}
 			}
 			if (purchasedItem.contains("jacket")){
@@ -150,10 +157,15 @@ public class ShopService{
 					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
 					if (itemOnServer.contains("jacket")){
 						JSONObject o = new JSONObject();
+						o.put("itemURL", serverItem.getChildText("itemURL", ns));
+						o.put("itemStock", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
 						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
 					}
+					
 				}
 
 			}
@@ -162,10 +174,15 @@ public class ShopService{
 					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
 					if (itemOnServer.contains("tshirt") || itemOnServer.contains("t-shirt")){
 						JSONObject o = new JSONObject();
+						o.put("itemURL", serverItem.getChildText("itemURL", ns));
+						o.put("itemStock", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
 						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
 					}
+					
 				}
 
 			}
@@ -174,10 +191,15 @@ public class ShopService{
 					String itemOnServer = serverItem.getChildText("itemName", ns).toLowerCase(); //Ensures that we don't get case problems
 					if (itemOnServer.contains("jeans") || itemOnServer.contains("trousers")){
 						JSONObject o = new JSONObject();
+						o.put("itemURL", serverItem.getChildText("itemURL", ns));
+						o.put("itemStock", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
 						itemsForDeletion.add(serverItem); //Adds to the list so we can remove them for the itemsOnServer list to not all them more than once
 					}
+					
 				}
 			}
 			
@@ -189,6 +211,9 @@ public class ShopService{
 			for (Element e : itemsForDeletion){
 				itemsOnServer.remove(e);
 			}
+			itemsForDeletion.clear(); //Clears the arrayList after deleting everything in it
+			
+
 		}
 		System.out.println(array.toString());
 		return array.toString();

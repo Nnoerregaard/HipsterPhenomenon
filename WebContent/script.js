@@ -256,7 +256,7 @@ function addItemsToTable(items, shopID) {
 		stockRow.appendChild(stockCell);
 
 		table.appendChild(stockRow);
-		
+
 		/*
 		 * Only add this part if we are looking at the shop hipsterPhenomenon
 		 */
@@ -345,44 +345,45 @@ function addItemsToTable(items, shopID) {
 function createRecommendationView() {
 	var container = document.getElementById("productcontainer");
 	var frame = document.createElement("div");
-	frame.setAttribute("class", "productframe");
+	frame.setAttribute("class", "suggestionframe");
 
 	//Previous purchases and previous purchases headline
 	var text = document.createElement("div");
-	text.setAttribute("class","productText");
 	var pHeader = document.createElement("h5");
-	pHeader.textContent = "You have previously bought";
+	pHeader.textContent = "Based on your previous purchases, we suggest";
 	text.appendChild(pHeader);
-	var description = document.createElement("div");
-	//The retrival of purchases only work if the customer is logged in because otherwise the serverData variable on the server is not set and we get a nullPointerException
-	//This should never be called if the user is not logged in, but to be safe we check it here
-	var purchaseList = document.createElement("ul");
-	purchaseList.style.overflow = "scroll";
-	var sortedArray = [];
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
-			
+			suggestedItems = JSON.parse(response);
+			suggestedItems.forEach(function(item) {
+				
+				var pHeader = document.createElement("h5");
+				pHeader.textContent = item.itemName;
+				
+				var imgHolder = document.createElement("div");
+				var img = document.createElement("img");
+				img.setAttribute("class", "productimage");
+				img.setAttribute("alt", item.itemName);
+				img.setAttribute("src", item.itemURL);
+				imgHolder.appendChild(img);
+				
+				var addButton = document.createElement("input");
+				addButton.setAttribute("type", "button");
+				addButton.setAttribute("value", "Add to cart");
+				frame.appendChild(imgHolder);
+				frame.appendChild(addButton);
+			});
+
 		});
 	}
-	
+
 	//button for geolocation suggestion
 	var button = document.createElement("button");
+	button.style.float = "right";
 	button.textContent="Location suggestions";
 	addEventListener(button, "click", function() {
 		getLocation();
 	});
-
-	frame.appendChild(text);
-	frame.appendChild(button);
-	text.appendChild(description);
-	description.appendChild(purchaseList);
-
-	//Info
-	var info = document.createElement("div");
-	info.setAttribute("class", "productInfo");
-
-	frame.appendChild(info);
-	container.appendChild(frame);
 }
 
 /*
@@ -460,36 +461,36 @@ function dragAway() {
  */
 function getLocation()
 {
-if (navigator.geolocation)
-  {
-  navigator.geolocation.getCurrentPosition(showPosition, showError);
-  }
-else{alert("Geolocation is not supported by this browser.");}
+	if (navigator.geolocation)
+	{
+		navigator.geolocation.getCurrentPosition(showPosition, showError);
+	}
+	else{alert("Geolocation is not supported by this browser.");}
 }
 
 function showPosition(position)
 {
-alert("Latitude: " + position.coords.latitude + 
-"<br>Longitude: " + position.coords.longitude); 
+	alert("Latitude: " + position.coords.latitude + 
+			"<br>Longitude: " + position.coords.longitude); 
 }
 
 function showError(error)
 {
-switch(error.code) 
-  {
-  case error.PERMISSION_DENIED:
-    alert("User denied the request for Geolocation.");
-    break;
-  case error.POSITION_UNAVAILABLE:
-    alert("Location information is unavailable.");
-    break;
-  case error.TIMEOUT:
-    alert("The request to get user location timed out.");
-    break;
-  case error.UNKNOWN_ERROR:
-    alert("An unknown error occurred.");
-    break;
-  }
+	switch(error.code) 
+	{
+	case error.PERMISSION_DENIED:
+		alert("User denied the request for Geolocation.");
+		break;
+	case error.POSITION_UNAVAILABLE:
+		alert("Location information is unavailable.");
+		break;
+	case error.TIMEOUT:
+		alert("The request to get user location timed out.");
+		break;
+	case error.UNKNOWN_ERROR:
+		alert("An unknown error occurred.");
+		break;
+	}
 }
 
 /////////////////////////////////////////////////////
