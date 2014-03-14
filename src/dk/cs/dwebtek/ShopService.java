@@ -117,6 +117,7 @@ public class ShopService{
 					if (!array.toString().contains(itemName)){
 						JSONObject o = new JSONObject();
 						o.put("name", itemName);
+						o.put("amount", e.getChildText("saleAmount", ns));
 						array.put(o);
 					}
 				}
