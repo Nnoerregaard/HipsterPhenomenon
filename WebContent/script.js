@@ -69,7 +69,11 @@ $(function() {
 				$("#feedback").html("You are logged in as " + $("#usernameField").val() + "|");
 				$("#totalPrice").html(shoppingCart + " The total price of your purchase is: " + customer.totalPrice);
 
-				createRecommendationView();
+				sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
+					// This code is called when the server has sent its data. It calls the method building the view on the site	
+					var items = JSON.parse(itemsText);
+					addItemsToTable(items, "279");
+				});
 			} else if (loginResponse === "false"){
 				customer.loggedIn = false;
 				alert("Your login information was wrong. Please try again.");
@@ -99,16 +103,18 @@ $(function() {
 				sendRequest("POST", "rest/shop/sell", toSend, function(saleResponse) {
 					if (saleResponse === "true") {
 						sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
-							// Updates the view after purchase
-							var items = JSON.parse(itemsText);
-							addItemsToTable(items, "279");
-							createRecommendationView();
 						});
 						//This else is executed if the purchase did not succeed!
 					} else {
 						$("#totalPrice").html("Something went wrong");
 					}
 				});
+			});
+			// Updates the view after purchase
+			sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
+				// This code is called when the server has sent its data. It calls the method building the view on the site	
+				var items = JSON.parse(itemsText);
+				addItemsToTable(items, "279");
 			});
 			/*
 			 * Do not write in plural if the customer only bought one product
@@ -322,6 +328,7 @@ function addItemsToTable(items, shopID) {
 			buttonCell.appendChild(addButton);
 			buttonRow.appendChild(buttonCell);
 			table.appendChild(buttonRow);
+			
 
 		}
 		//Hide the buy button if we are not looking at HipsterPhenomenon!
@@ -336,6 +343,12 @@ function addItemsToTable(items, shopID) {
 		//last appending
 		container.appendChild(frame);
 	});
+	/*
+	 * Only create this view when we are looking at HipsterPhenomenon
+	 */
+	if (shopID == 279){
+		createRecommendationView();
+	}
 }
 
 /*
