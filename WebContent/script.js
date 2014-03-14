@@ -61,13 +61,13 @@ $(function() {
 				 * We hide the create customer button and login form when you are successfully logged in
 				 */
 
-				$("#usernameField").attr("visibility", "hidden");
-				$("#passwordField").attr("visibility", "hidden");
-				$("#loginButton").attr("visibility", "hidden");
-				$("#createButton").attr("visibility", "hidden");
+				$("#usernameField").hide();
+				$("#passwordField").hide();
+				$("#loginButton").hide();
+				$("#createButton").hide();
 
-				$("#feedback").html("You are logged in as " + $("#usernameField").val());
-				$("#totalPrice").html("|" + shoppingCart + " The total price of your purchase is: " + customer.totalPrice);
+				$("#feedback").html("You are logged in as " + $("#usernameField").val() + "|");
+				$("#totalPrice").html(shoppingCart + " The total price of your purchase is: " + customer.totalPrice);
 
 				createRecommendationView();
 			} else if (loginResponse === "false"){
@@ -113,13 +113,13 @@ $(function() {
 			 * Do not write in plural if the customer only bought one product
 			 */
 			if (customer.amountSold == 0) {
-				$("#totalPrice").html("|" + shoppingCart +" Please add something to your cart");
+				$("#totalPrice").html(shoppingCart +" Please add something to your cart");
 			}
 			else if(customer.amountSold > 1) {
-				$("#totalPrice").html("|" + shoppingCart +" You have succesfully bought the items");
+				$("#totalPrice").html(shoppingCart +" You have succesfully bought the items");
 			}
 			else {
-				$("#totalPrice").html("|" + shoppingCart +" You have succesfully bought the item");
+				$("#totalPrice").html(shoppingCart +" You have succesfully bought the item");
 			}
 			reset(); //Is executed before the items has actually been sold. It does not matter, however, since we have a copy of the cart in the variable cart
 		} else {
@@ -261,6 +261,7 @@ function addItemsToTable(items, shopID) {
 		 */
 
 		if (shopID == "279"){
+			$("#buyButton").show(); //Shows the buy button if it has been hidden
 
 			//inCart
 			var inCartRow = document.createElement("tr");
@@ -324,7 +325,7 @@ function addItemsToTable(items, shopID) {
 		}
 		//Hide the buy button if we are not looking at HipsterPhenomenon!
 		else {
-			$("#buyButton").attr("visibility", "hidden");
+			$("#buyButton").hide();
 		}
 
 		//last appending in the info div
@@ -420,9 +421,12 @@ function addItemToCart(itemStock, itemID, itemPrice) {
 			document.getElementById(itemID + "inCart").textContent++; //Increase the amount in cart viewed to the user
 			// document.getElementById(item.itemID + "stock").textContent--;
 			customer.totalPrice += parseInt(itemPrice);
-			document.getElementById("totalPrice").innerHTML = "| The total price of your purchase is: " + customer.totalPrice;
+			document.getElementById("totalPrice").innerHTML = shoppingCart + " The total price of your purchase is: " + customer.totalPrice;
 		}
-		else if (addButton.style.visibility != undefined){
+		else if (typeof addButton == "undefined"){
+			alert("This item is out of stock!");
+		}
+		else {
 			addButton.style.visibility="hidden"; //IF you buy too many items the add button disappears
 			buttonCell.textContent = "Out of stock";
 		}
@@ -436,17 +440,24 @@ function addItemToCart(itemStock, itemID, itemPrice) {
  * The function that handles our drop event by reading the data collected during drag
  */
 function handleDrop(event) {
+	$("#totalPrice").css("color", "yellow");
 	var information = JSON.parse(event.dataTransfer.getData("Information", JSONDragInformation));
 	addItemToCart(information.stock, information.ID, information.price);
 }
 
 /*
- * Taken from http://www.w3schools.com/html/html5_draganddrop.asp. Allows us to drop items
+ * Taken from http://www.w3schools.com/html/html5_draganddrop.asp. Allows us to drop items and changes the text color when you dag over
+ * the shopping cart
  */
 
-function allowDrop(ev) {
+function dragOver(ev) {
 	ev.preventDefault();
+	$("#totalPrice").css("color", "green");
 }
+function dragAway() {
+	$("#totalPrice").css("color", "yellow");
+}
+
 
 /*
  * Code for geolocation

@@ -15,8 +15,8 @@
 			</div>
 		</div>
 		<!--This area defines the header. Mainheader is the top part of the header. Subheader is the lower part of the header-->
-		<div id="mainheader"></div>
-		<div id="subheader">
+		<div id="mainheader" ondrop="handleDrop(event)" ondragover="dragOver(event)" ondragleave="dragAway()"></div>
+		<div id="subheader" ondrop="handleDrop(event)" ondragover="dragOver(event)" ondragleave="dragAway()">
 			<!--SubheaderList is the list containing the top menu called menuList-->
 			<div id="subheaderList">
 			<select id="shopList"></select>
@@ -25,7 +25,7 @@
 					<input id="passwordField" type="password"
 						placeholder="Enter Password" />
 				</div>
-				<div id="totalPrice" ondrop="handleDrop(event)" ondragover="allowDrop(event)">
+				<div id="totalPrice">
 					<input id="loginButton" type="button" value="Login" /> <input
 						id="createCustomer" type="button" value="Create user" />
 				</div>
