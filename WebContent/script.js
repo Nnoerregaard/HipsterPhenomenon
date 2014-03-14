@@ -25,7 +25,7 @@ $(function() {
 	});
 
 	/*
-	 * Adds shops to the topbar
+	 * Adds shops to the topbar. When a shop is selected we build a view from the elements in that shop (without the add to cart and buy buttons!)
 	 */
 	sendRequest("GET", "rest/shop/showShops", null, function(response) {
 		response = JSON.parse(response);
@@ -33,7 +33,12 @@ $(function() {
 			$("#shopList").append("<option value="+shop.ID+">" + shop.Name + "</option>");
 		});
 		$("#shopList").on("change", function() {
-			console.log(this.value);
+			var shopID = this.value;
+			sendRequest("GET", "rest/shop/items?ID=" + shopID, null, function(itemsText) {
+				// This code is called when the server has sent its data. It calls the method building the view on the site	
+				var items = JSON.parse(itemsText);
+				addItemsToTable(items, shopID);
+			});
 		});
 	});
 	/*
@@ -62,7 +67,7 @@ $(function() {
 				$("#createButton").attr("visibility", "hidden");
 
 				$("#feedback").html("You are logged in as " + $("#usernameField").val());
-				$("#totalPrice").html("| The total price of your purchase is: " + customer.totalPrice);
+				$("#totalPrice").html("|" + shoppingCart + " The total price of your purchase is: " + customer.totalPrice);
 
 				createRecommendationView();
 			} else if (loginResponse === "false"){
@@ -108,13 +113,13 @@ $(function() {
 			 * Do not write in plural if the customer only bought one product
 			 */
 			if (customer.amountSold == 0) {
-				$("#totalPrice").html("| Please add something to your cart");
+				$("#totalPrice").html("|" + shoppingCart +" Please add something to your cart");
 			}
 			else if(customer.amountSold > 1) {
-				$("#totalPrice").html("| You have succesfully bought the items");
+				$("#totalPrice").html("|" + shoppingCart +" You have succesfully bought the items");
 			}
 			else {
-				$("#totalPrice").html("| You have succesfully bought the item");
+				$("#totalPrice").html("|" + shoppingCart +" You have succesfully bought the item");
 			}
 			reset(); //Is executed before the items has actually been sold. It does not matter, however, since we have a copy of the cart in the variable cart
 		} else {
@@ -174,6 +179,7 @@ function resetFields() {
 	$("#usernameField").val("");
 	$("#passwordField").val("");
 }
+var shoppingCart = "<img id= \"shoppingCart\"src=http://www.iaatkfoundation.org/v/vspfiles/templates/Adam/images/template/shopping_cart.png />";
 /*
  * This function adds the items on our server to our view. It also adds the add to cart button and its event handler!
  */
@@ -312,6 +318,10 @@ function addItemsToTable(items, shopID) {
 			buttonRow.appendChild(buttonCell);
 			table.appendChild(buttonRow);
 
+		}
+		//Hide the buy button if we are not looking at HipsterPhenomenon!
+		else {
+			$("#buyButton").attr("visibility", "hidden");
 		}
 
 		//last appending in the info div
