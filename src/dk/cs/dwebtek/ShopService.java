@@ -46,6 +46,7 @@ public class ShopService{
 	private XMLOutputter outputter;
 	private SAXBuilder b;
 	private String shopKey;
+	private ArrayList<ItemLocation> locations;
 	@Context ServletContext serverData;
 	/*
 	 * This is the constructor which initializes all the field variables we need. It works as a constructor because it has the PostConstruct annotation
@@ -69,6 +70,7 @@ public class ShopService{
 		outputter = new XMLOutputter();
 		b = new SAXBuilder();
 		shopKey = "E445247AA36C3E7174F5611B";
+		locations = new ArrayList<ItemLocation>();
 	}
 
 	/*
@@ -342,6 +344,20 @@ public class ShopService{
 			array.put(o);
 		}
 		return array.toString();
+	}
+	
+	@POST
+	@Path("location")
+	public String storeLocation(
+			@FormParam("itemID") String itemID,
+			@FormParam("lat") double lat,
+			@FormParam("lng") double lng)
+	{
+			ItemLocation location = new ItemLocation(itemID, lat, lng);
+			locations.add(location);
+			System.out.println(itemID+" "+lat+" "+lng);
+			serverData.setAttribute("locations", locations);
+			return locations.toString();
 	}
 
 	/* 

@@ -109,6 +109,13 @@ $(function() {
 						$("#totalPrice").html("Something went wrong");
 					}
 				});
+				//Give location to bought item
+				if (loc.lat !== 0 && loc.lng !== 0) {
+					var toSendNow = "itemID=" + product.ID + "&lat=" +  loc.lat + "&lng="+loc.lng;
+					sendRequest("POST", "rest/shop/location", toSendNow, function(someString) {
+						alert(someString);
+					});
+				}
 			});
 			/*
 			 * Do not write in plural if the customer only bought one product
@@ -160,6 +167,9 @@ $(function() {
 			resetFields();
 		}
 	});
+	
+	//Get location when entering the website
+	getLocation();
 });
 
 /*
@@ -470,6 +480,12 @@ function dragAway() {
 /*
  * Code for geolocation
  */
+
+var loc = {
+		lat: 0,
+		lng: 0
+};
+
 function getLocation()
 {
 	if (navigator.geolocation)
@@ -481,8 +497,8 @@ function getLocation()
 
 function showPosition(position)
 {
-	alert("Latitude: " + position.coords.latitude + 
-			"<br>Longitude: " + position.coords.longitude); 
+	loc.lat = position.coords.latitude;
+	loc.lng = position.coords.longitude;
 }
 
 function showError(error)
