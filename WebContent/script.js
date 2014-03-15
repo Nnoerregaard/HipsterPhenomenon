@@ -69,7 +69,11 @@ $(function() {
 				$("#feedback").html("You are logged in as " + $("#usernameField").val() + "|");
 				$("#totalPrice").html(shoppingCart + " The total price of your purchase is: " + customer.totalPrice);
 
-				createRecommendationView();
+				sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
+					// This code is called when the server has sent its data. It calls the method building the view on the site	
+					var items = JSON.parse(itemsText);
+					addItemsToTable(items, "279");
+				});
 			} else if (loginResponse === "false"){
 				customer.loggedIn = false;
 				alert("Your login information was wrong. Please try again.");
@@ -99,10 +103,6 @@ $(function() {
 				sendRequest("POST", "rest/shop/sell", toSend, function(saleResponse) {
 					if (saleResponse === "true") {
 						sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
-							// Updates the view after purchase
-							var items = JSON.parse(itemsText);
-							addItemsToTable(items, "279");
-							createRecommendationView();
 						});
 						//This else is executed if the purchase did not succeed!
 					} else {
@@ -116,6 +116,12 @@ $(function() {
 						alert(someString);
 					});
 				}
+			});
+			// Updates the view after purchase
+			sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
+				// This code is called when the server has sent its data. It calls the method building the view on the site	
+				var items = JSON.parse(itemsText);
+				addItemsToTable(items, "279");
 			});
 			/*
 			 * Do not write in plural if the customer only bought one product
@@ -332,6 +338,7 @@ function addItemsToTable(items, shopID) {
 			buttonCell.appendChild(addButton);
 			buttonRow.appendChild(buttonCell);
 			table.appendChild(buttonRow);
+			
 
 		}
 		//Hide the buy button if we are not looking at HipsterPhenomenon!
@@ -346,6 +353,12 @@ function addItemsToTable(items, shopID) {
 		//last appending
 		container.appendChild(frame);
 	});
+	/*
+	 * Only create this view when we are looking at HipsterPhenomenon
+	 */
+	if (shopID == 279){
+		createRecommendationView();
+	}
 }
 
 /*
@@ -358,37 +371,46 @@ function createRecommendationView() {
 	frame.setAttribute("class", "suggestionframe");
 
 	//Previous purchases and previous purchases headline
+	var button = document.createElement("button");
 	var text = document.createElement("div");
 	var pHeader = document.createElement("h5");
 	pHeader.textContent = "Based on your previous purchases, we suggest";
 	text.appendChild(pHeader);
+	text.appendChild(button);
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
 			suggestedItems = JSON.parse(response);
 			suggestedItems.forEach(function(item) {
+				var suggestedItem = document.createElement("div");
+				suggestedItem.setAttribute("class", "suggestItemDiv");
 				
-				var pHeader = document.createElement("h5");
-				pHeader.textContent = item.itemName;
+				var header = document.createElement("h5");
+				header.textContent = item.itemName;
 				
-				var imgHolder = document.createElement("div");
 				var img = document.createElement("img");
 				img.setAttribute("class", "productimage");
 				img.setAttribute("alt", item.itemName);
 				img.setAttribute("src", item.itemURL);
-				imgHolder.appendChild(img);
 				
 				var addButton = document.createElement("input");
 				addButton.setAttribute("type", "button");
 				addButton.setAttribute("value", "Add to cart");
-				frame.appendChild(imgHolder);
-				frame.appendChild(addButton);
+				suggestedItem.appendChild(header);
+				suggestedItem.appendChild(img);
+				suggestedItem.appendChild(addButton);
+				
+				addEventListener(addButton, "click", function(){
+					addItemToCart(item.itemStock, item.itemID, item.itemPrice);
+				});
+				
+				frame.appendChild(suggestedItem);
 			});
 
 		});
 	}
 
 	//button for geolocation suggestion
-	var button = document.createElement("button");
+	button.style.float = "right";
 	button.textContent="Location suggestions";
 	addEventListener(button, "click", function() {
 		getLocation();

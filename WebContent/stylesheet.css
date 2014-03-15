@@ -224,11 +224,16 @@ because of the opacity property*/
 	margin: .125em;
 	border-radius: 0.3em 0.3em 0.3em 0.3em;
 }
+.suggestItemDiv {
+	width: 10em;
+	margin-left: 1em;
+    float:left;
+}
 
 .suggestionframe {
 	border: .063em #777777 solid;
 	width: 99.3%;
-	height: 17em;
+	height: 20em;
 	float: left;
 	margin: .125em;
 	border-radius: 0.3em 0.3em 0.3em 0.3em;
@@ -277,6 +282,14 @@ because of the opacity property*/
 	width: 10em;
 	height: 1.8em;
 	margin-top: 5.9em;
+}
+.suggestionframe input{
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: lime;
+	border-color: lime;
+	border-radius: 5px;
+	width: 10em;
 }
 
 /*The footer at the bottom of the page*/
