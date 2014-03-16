@@ -350,26 +350,30 @@ public class ShopService{
 		return array.toString();
 	}
 	
+	/*
+	 * This stores a list of ItemLocation objects in an attribute in a servlet session.
+	 * The ItemLocation object gets the itemID of a bought item and 
+	 * the latitude and longitude of where it was bought.
+	 */
 	@POST
 	@Path("location")
-	public String storeLocation(@FormParam("itemID") String itemID, @FormParam("lat") Integer lat, @FormParam("lng") Integer lng){
-			
+	public void storeLocation(@FormParam("itemID") String itemID, @FormParam("lat") Integer lat, @FormParam("lng") Integer lng){
 		ItemLocation location = new ItemLocation(itemID, lat, lng);
 		if(serverData.getAttribute("locations") == null) {
 			locations.add(location);
-			System.out.println(locations);
 			serverData.setAttribute("locations", locations);
-			System.out.println(serverData.getAttribute("locations"));
-			return "Made attribute";
 		}
 		else {
 			ArrayList<ItemLocation> serverLocations = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
 			serverLocations.add(location);
 			System.out.println(serverData.getAttribute("locations"));
-			return "added to attribute";
 		}	
 	}
 	
+	/*
+	 * This method retrieves the items in the servlet session attribute "locations"
+	 * that have been bought around the current location of the customer.
+	 */
 	@GET
 	@Path("getLocations")
 	public String getLocations(@QueryParam("lat") Integer lat, @QueryParam("lng") Integer lng) {
@@ -393,8 +397,7 @@ public class ShopService{
 		
 		return rightLocs.toString();
 		}
-		
-		return "nothing in server";
+		return "";
 	 }
 
 	/* 
