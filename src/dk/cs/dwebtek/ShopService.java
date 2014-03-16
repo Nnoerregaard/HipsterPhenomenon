@@ -356,14 +356,14 @@ public class ShopService{
 	@Path("location")
 	public String storeLocation(
 			@FormParam("itemID") String itemID,
-			@FormParam("lat") double lat,
-			@FormParam("lng") double lng)
+			@FormParam("lat") Integer lat, 
+			@FormParam("lng") Integer lng)
 	{
-			ItemLocation location = new ItemLocation(itemID, lat, lng);
-			locations.add(location);
+			//ItemLocation location = new ItemLocation(itemID, lat, lng);
+			//locations.add(location);
 			System.out.println(itemID+" "+lat+" "+lng);
-			serverData.setAttribute("locations", locations);
-			return locations.toString();
+			//serverData.setAttribute("locations", locations);
+			return itemID+" "+lat+" "+lng;
 	}
 
 	/* 

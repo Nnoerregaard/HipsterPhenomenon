@@ -111,9 +111,9 @@ $(function() {
 				});
 				//Give location to bought item
 				if (loc.lat !== 0 && loc.lng !== 0) {
-					var toSendNow = "itemID=" + product.ID + "&lat=" +  loc.lat + "&lng="+loc.lng;
-					sendRequest("POST", "rest/shop/location", toSendNow, function(someString) {
-						alert(someString);
+					var toSendNow = "itemID=" + product.ID + "&lat=" +  Math.round(loc.lat) + "&lng=" + Math.round(loc.lng);
+					sendRequest("POST", "rest/shop/location", toSendNow, function(response) {
+						alert(response);
 					});
 				}
 			});
@@ -376,7 +376,6 @@ function createRecommendationView() {
 	var pHeader = document.createElement("h5");
 	pHeader.textContent = "Based on your previous purchases, we suggest";
 	text.appendChild(pHeader);
-	text.appendChild(button);
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
 			suggestedItems = JSON.parse(response);
@@ -415,9 +414,9 @@ function createRecommendationView() {
 	addEventListener(button, "click", function() {
 		getLocation();
 	});
-
+	
+	text.appendChild(button);
 	frame.appendChild(text);
-	frame.appendChild(button);
 	//text.appendChild(description);
 	//description.appendChild(purchaseList);
 
