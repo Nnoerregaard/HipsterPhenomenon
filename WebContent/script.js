@@ -289,6 +289,9 @@ function addItemsToTable(items, shopID) {
 
 		if (shopID == "279"){
 			$("#buyButton").show(); //Shows the buy button if it has been hidden
+			
+			//Sets selection to HipsterPhenomenon. Code from http://stackoverflow.com/questions/7373058/how-to-change-the-selected-option-of-html-select-element
+		    $("#shopList").val("279"); //The value is the shop IDs
 
 			//inCart
 			var inCartRow = document.createElement("tr");
@@ -434,6 +437,9 @@ function createRecommendationView() {
 			});
 
 		});
+	}
+	else {
+		pHeader.textContent = "Please log in to see your personal suggestions or chose Location suggestions";
 	}
 	
 	//text.appendChild(description);

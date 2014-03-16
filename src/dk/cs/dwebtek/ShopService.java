@@ -47,7 +47,6 @@ public class ShopService{
 	private SAXBuilder b;
 	private String shopKey;
 	private ArrayList<ItemLocation> locations;
-	private List<Element> itemsOnServer; //Optimization. We only get through all the elements on the server once per page refresh
 	@Context ServletContext serverData;
 	/*
 	 * This is the constructor which initializes all the field variables we need. It works as a constructor because it has the PostConstruct annotation
@@ -61,9 +60,12 @@ public class ShopService{
 	 * A dummy constructor allowing us to debug using the debugClass
 	 */
 
+	/*
+	
 	public ShopService() {
 		init(); //It calls init to initialize the right values
 	}
+	 */
 
 	@PostConstruct
 	public void init(){
@@ -72,7 +74,6 @@ public class ShopService{
 		b = new SAXBuilder();
 		shopKey = "E445247AA36C3E7174F5611B";
 		locations = new ArrayList<ItemLocation>();
-		itemsOnServer = getItems("279");
 	}
 
 	/*
@@ -108,6 +109,7 @@ public class ShopService{
 	@GET
 	@Path("purchases")
 	public String returnSuggestions(){
+		List<Element> itemsOnServer = getItems("279");
 		JSONArray array = new JSONArray();
 
 		ArrayList<PurchasedItem> soldItems = getSoldItems();
@@ -257,8 +259,6 @@ public class ShopService{
 			@FormParam("itemID") String itemID, 
 			@FormParam("saleAmount") Integer saleAmount){
 		try{
-			String test = new String(customerName.getBytes("UTF-8"), "ISO-8859-1");
-			System.out.println(test);
 			String customerID = getCustomerID(customerName);
 			Document d = new Document();
 			HttpURLConnection connection = connect("POST", "sellItems");
@@ -325,11 +325,9 @@ public class ShopService{
 	@GET
 	@Path("items")
 	public String returnItems(@QueryParam ("ID") String shopID){
+		List<Element> itemsOnServer = getItems(shopID);
 		JSONArray array = new JSONArray();
-		List<Element> items;
-		if (shopID.equals("279")) items = itemsOnServer;
-		else items = getItems(shopID);
-		for (Element item : items) {
+		for (Element item : itemsOnServer) {
 			JSONObject o = new JSONObject();
 			o.put("itemID", item.getChildText("itemID", ns));
 			o.put("itemName", item.getChildText("itemName", ns));
@@ -512,6 +510,7 @@ public class ShopService{
 	 */
 
 	private ArrayList<PurchasedItem> getSoldItems(){
+		List<Element> itemsOnServer = getItems("279");
 		String currentUser = (String) serverData.getAttribute("username");
 		String itemName = "";
 		List<Element> purchases = new ArrayList<Element>();
