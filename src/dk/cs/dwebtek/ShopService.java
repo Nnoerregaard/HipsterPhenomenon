@@ -341,7 +341,6 @@ public class ShopService{
 			Element description = item.getChild("itemDescription", ns).getChild("document", ns);
 			description = transformDocumentTags(description);
 			description.setName("p");
-			description.setNamespace(Namespace.NO_NAMESPACE);
 			Format f = Format.getRawFormat().setOmitEncoding(true);
 			XMLOutputter xmlOut = new XMLOutputter(f);
 			String outputDescription = xmlOut.outputString(description);
