@@ -373,11 +373,26 @@ public class ShopService{
 	
 	@GET
 	@Path("getLocations")
-	public String getLocations(@QueryParam("lat") double lat, @QueryParam("lng") double lng) {
+	public String getLocations(@QueryParam("lat") Integer lat, @QueryParam("lng") Integer lng) {
 		if (serverData.getAttribute("locations") != null) {
 		ArrayList<ItemLocation> locs = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
-		ArrayList<ItemLocation> rightLocs = new ArrayList<ItemLocation>();
-		return locs.toString();
+		JSONArray rightLocs = new JSONArray();
+		int latMax = lat + 1;
+		int latMin = lat - 1;
+		int lngMax = lng + 1;
+		int lngMin = lng - 1;
+		
+		for (ItemLocation loc : locs) {
+			if (latMin <= loc.getLat() && loc.getLat() <= latMax) {
+				if (lngMin <= loc.getLng() && loc.getLng() <= lngMax) {
+					JSONObject o = new JSONObject();
+					o.put("loc", loc.getItemID());
+					rightLocs.put(o);
+				}
+			}
+		}
+		
+		return rightLocs.toString();
 		}
 		
 		return "nothing in server";

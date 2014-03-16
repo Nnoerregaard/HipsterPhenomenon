@@ -440,7 +440,15 @@ function createRecommendationView() {
 	button.style.float = "right";
 	button.textContent="Location suggestions";
 	addEventListener(button, "click", function() {
-		
+		if (location.lat !== 0 && location.lng !== 0) {
+			var toSend = "lat=" + parseInt(loc.lat) + "&lng=" + parseInt(loc.lng);
+			sendRequest("GET", "rest/shop/getLocations?"+toSend, null, function(locations) {
+				alert(locations);
+			});
+		}
+		else {
+			alert("Position is undefined");
+		}
 	});
 	
 	//text.appendChild(description);
