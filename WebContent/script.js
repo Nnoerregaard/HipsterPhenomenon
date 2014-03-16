@@ -382,10 +382,21 @@ function createRecommendationView() {
 
 	//Previous purchases and previous purchases headline
 	var button = document.createElement("button");
+	button.setAttribute("id", "locationButton");
+	//button for geolocation suggestion
+	button.style.float = "right";
+	button.textContent="Location suggestions";
+	addEventListener(button, "click", function() {
+		getLocation();
+	});
+	
 	var text = document.createElement("div");
 	var pHeader = document.createElement("h5");
 	pHeader.textContent = "Based on your previous purchases, we suggest";
 	text.appendChild(pHeader);
+	
+	frame.appendChild(button);
+	frame.appendChild(text);
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
 			suggestedItems = JSON.parse(response);
@@ -400,6 +411,7 @@ function createRecommendationView() {
 				img.setAttribute("class", "productimage");
 				img.setAttribute("alt", item.itemName);
 				img.setAttribute("src", item.itemURL);
+				img.setAttribute("draggable", "true");
 				
 				var addButton = document.createElement("input");
 				addButton.setAttribute("type", "button");
@@ -407,6 +419,12 @@ function createRecommendationView() {
 				suggestedItem.appendChild(header);
 				suggestedItem.appendChild(img);
 				suggestedItem.appendChild(addButton);
+				
+				img.addEventListener("dragstart", function(event) {
+					var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
+					JSONDragInformation = JSON.stringify(dragInformation);
+					event.dataTransfer.setData("Information", JSONDragInformation);
+				});
 				
 				addEventListener(addButton, "click", function(){
 					addItemToCart(item.itemStock, item.itemID, item.itemPrice);
@@ -425,8 +443,6 @@ function createRecommendationView() {
 		
 	});
 	
-	text.appendChild(button);
-	frame.appendChild(text);
 	//text.appendChild(description);
 	//description.appendChild(purchaseList);
 

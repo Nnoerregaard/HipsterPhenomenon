@@ -291,6 +291,15 @@ because of the opacity property*/
 	border-radius: 5px;
 	width: 10em;
 }
+#locationButton{
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: lime;
+	border-color: lime;
+	border-radius: 5px;
+	width: 15em;
+}
+
 
 /*The footer at the bottom of the page*/
 

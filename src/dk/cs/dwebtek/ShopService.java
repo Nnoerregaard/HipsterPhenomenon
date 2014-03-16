@@ -146,7 +146,7 @@ public class ShopService{
 						JSONObject o = new JSONObject();
 						o.put("itemURL", serverItem.getChildText("itemURL", ns));
 						o.put("itemStock", serverItem.getChildText("itemStock", ns));
-						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemPrice", ns));
 						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
@@ -162,7 +162,7 @@ public class ShopService{
 						JSONObject o = new JSONObject();
 						o.put("itemURL", serverItem.getChildText("itemURL", ns));
 						o.put("itemStock", serverItem.getChildText("itemStock", ns));
-						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemPrice", ns));
 						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
@@ -179,7 +179,7 @@ public class ShopService{
 						JSONObject o = new JSONObject();
 						o.put("itemURL", serverItem.getChildText("itemURL", ns));
 						o.put("itemStock", serverItem.getChildText("itemStock", ns));
-						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemPrice", ns));
 						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
@@ -196,7 +196,7 @@ public class ShopService{
 						JSONObject o = new JSONObject();
 						o.put("itemURL", serverItem.getChildText("itemURL", ns));
 						o.put("itemStock", serverItem.getChildText("itemStock", ns));
-						o.put("itemPrice", serverItem.getChildText("itemStock", ns));
+						o.put("itemPrice", serverItem.getChildText("itemPrice", ns));
 						o.put("itemName", serverItem.getChildText("itemName", ns));
 						o.put("itemID", serverItem.getChildText("itemID", ns));
 						array.put(o);
@@ -341,7 +341,6 @@ public class ShopService{
 			Element description = item.getChild("itemDescription", ns).getChild("document", ns);
 			description = transformDocumentTags(description);
 			description.setName("p");
-			description.setNamespace(Namespace.NO_NAMESPACE);
 			Format f = Format.getRawFormat().setOmitEncoding(true);
 			XMLOutputter xmlOut = new XMLOutputter(f);
 			String outputDescription = xmlOut.outputString(description);
