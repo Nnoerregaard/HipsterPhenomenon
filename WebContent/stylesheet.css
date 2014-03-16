@@ -283,7 +283,7 @@ because of the opacity property*/
 	height: 1.8em;
 	margin-top: 5.9em;
 }
-.suggestionframe input{
+table input{
 	color: #FFFFFF;
 	font-weight: bold;
 	background-color: lime;

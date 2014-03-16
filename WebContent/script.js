@@ -215,117 +215,51 @@ var shoppingCart = "<img id= \"shoppingCart\"src=http://www.iaatkfoundation.org/
  */
 function addItemsToTable(items, shopID) {
 	// Get the table body we we can add items to it
-	var container = document.getElementById("productcontainer");
+	var container = $("#productcontainer");
 	// Remove all contents of the table body (if any exist)
-	container.innerHTML = "<h2>Category</h2>";
+	container.html("<h2>Category</h2>");
+	
 	/*
 	 * Adds each item on the server 
 	 */
 	items.forEach(function(item){
-		var frame = document.createElement("div");
-		frame.setAttribute("class", "productframe");
-		frame.setAttribute("draggable", "true");
+		var frame = $("<div/>", {"class": "productframe","draggable": "true"}).appendTo($(container));
 
 		//Image
-		var img = document.createElement("img");
-		img.setAttribute("class", "productimage");
-		img.setAttribute("alt", item.itemName);
-		img.setAttribute("src", item.itemURL);
-		frame.appendChild(img);
+		$("<img/>", {"class": "productimage", "src": item.itemURL, "alt": item.itemName}).appendTo(frame);
 
 		//Item description and description headline
-		var text = document.createElement("div");
-		text.setAttribute("class","productText");
-		var pHeader = document.createElement("h5");
-		pHeader.textContent = item.itemName;
-		text.appendChild(pHeader);
-		var description = document.createElement("div");
-		description.innerHTML = item.itemDescription; //We need to use inner HTML because the string contains HTML tags
-		text.appendChild(description);
-		frame.appendChild(text);
+		$("<div class=\"productText\"><h5>"+item.itemName+"</h5><div>"+item.itemDescription+"</div></div>").appendTo(frame);
 
-		//Info
-		var info = document.createElement("div");
-		info.setAttribute("class", "productInfo");
-
-		//Table
-		var table = document.createElement("table");
+		//The main table containing all the information
+		var table = $("<table/>");
 
 		//Price
-		var priceRow = document.createElement("tr");
-		var priceLabelCell = document.createElement("td");
-		var priceLabel = document.createElement("h6");
-		priceLabel.textContent = "Price:";
-		priceLabelCell.appendChild(priceLabel);
-		priceRow.appendChild(priceLabelCell);
-
-		var priceCell = document.createElement("td");
-		var price = document.createElement("h6");
-		price.textContent = item.itemPrice;
-		priceCell.appendChild(price);
-		priceRow.appendChild(priceCell);
-
-		table.appendChild(priceRow);
+		$("<tr><td><h6>Price:</h6></td><td><h6>"+item.itemPrice+"</h6></td></tr>").appendTo(table);
 
 		//Stock
-		var stockRow = document.createElement("tr");
-		var stockLabelCell = document.createElement("td");
-		var stockLabel = document.createElement("h6");
-		stockLabel.textContent = "Stock:";
-		stockLabelCell.appendChild(stockLabel);
-		stockRow.appendChild(stockLabelCell);
-
-		var stockCell = document.createElement("td");
-		var stock = document.createElement("h6");
-		stock.textContent = item.itemStock;
-		stockCell.appendChild(stock);
-		stockRow.appendChild(stockCell);
-
-		table.appendChild(stockRow);
+		$("<tr><td><h6>Stock:</h6></td><td><h6>"+item.itemStock+"</h6></td></tr>").appendTo(table);
+		table.appendTo(frame);
 
 		/*
 		 * Only add this part if we are looking at the shop hipsterPhenomenon
 		 */
-
 		if (shopID == "279"){
 			$("#buyButton").show(); //Shows the buy button if it has been hidden
 			
 			//Sets selection to HipsterPhenomenon. Code from http://stackoverflow.com/questions/7373058/how-to-change-the-selected-option-of-html-select-element
 		    $("#shopList").val("279"); //The value is the shop IDs
 
-			//inCart
-			var inCartRow = document.createElement("tr");
-			var inCartLabelCell = document.createElement("td");
-			var inCartLabel = document.createElement("h6");
-			inCartLabel.textContent = "In cart:";
-			inCartLabelCell.appendChild(inCartLabel);
-			inCartRow.appendChild(inCartLabelCell);
-
-			var inCartCell = document.createElement("td");
-			var inCart = document.createElement("h6");
-			inCart.setAttribute("id", item.itemID + "inCart");
-			inCart.textContent = 0;
-			inCartCell.appendChild(inCart);
-			inCartRow.appendChild(inCartCell);
-
-			table.appendChild(inCartRow);
-
-			//The buy button
-			var buttonRow = document.createElement("tr");
-			var buttonCell = document.createElement("td");
-
-			var addButton = document.createElement("input");
-			addButton.setAttribute("type", "button");
-			addButton.setAttribute("value", "Add to cart");
-
+			//inCart and add button
+		    $("<tr><td><h6>In cart:</h6></td><td><h6 id=\""+item.itemID+"inCart\">0</h6></td></tr>").appendTo(table);
+		    $("<tr><td id=\"buttonCell"+item.itemID+"\"><input type=\"button\" value=\"Add to cart\" id=\"addButton"+item.itemID+"\"></input>").appendTo(table);
 
 			/*
 			 * Hides the add to chart button and displays the out of stock message if there is no more items in stock!
 			 */
-
 			if(parseInt(item.itemStock) == 0) {
-				addButton.style.visibility = "hidden";
-				buttonCell.textContent = "Out of stock";
+				$("#addButton"+item.itemID).hide();
+				$("#buttonCell"+item.itemID).html("Out of stock");
 			}
 
 			/*
@@ -333,8 +267,8 @@ function addItemsToTable(items, shopID) {
 			 * can then be read in our drop handler. We add an unique drag handler for each object on the page
 			 * Method inspired by http://stackoverflow.com/questions/15839649/pass-object-through-datatransfer
 			 */
-
-			frame.addEventListener("dragstart", function(event) {
+			
+			frame.on("dragstart", function(event) {
 				var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
 				JSONDragInformation = JSON.stringify(dragInformation);
 				event.dataTransfer.setData("Information", JSONDragInformation);
@@ -343,34 +277,22 @@ function addItemsToTable(items, shopID) {
 			/*
 			 * This event listener is added for each add to chart button in turn when the view is build
 			 */
-			addEventListener(addButton, "click", function (){
+			$("#addButton"+item.itemID).on("click", function(){
 				addItemToCart(item.itemStock, item.itemID, item.itemPrice);
 			});
-
-			//appending the addButton
-			buttonCell.appendChild(addButton);
-			buttonRow.appendChild(buttonCell);
-			table.appendChild(buttonRow);
-			
-
+		
 		}
 		//Hide the buy button if we are not looking at HipsterPhenomenon!
 		else {
 			$("#buyButton").hide();
 		}
-
-		//last appending in the info div
-		info.appendChild(table);
-		frame.appendChild(info);
-
-		//last appending
-		container.appendChild(frame);
 	});
+	
 	/*
 	 * Only create this view when we are looking at HipsterPhenomenon
 	 */
 	if (shopID == 279){
-		createRecommendationView();
+		//createRecommendationView();
 	}
 }
 
