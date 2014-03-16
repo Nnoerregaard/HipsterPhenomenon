@@ -350,36 +350,54 @@ public class ShopService{
 		return array.toString();
 	}
 	
+	/*
+	 * This stores a list of ItemLocation objects in an attribute in a servlet session.
+	 * The ItemLocation object gets the itemID of a bought item and 
+	 * the latitude and longitude of where it was bought.
+	 */
 	@POST
 	@Path("location")
-	public String storeLocation(@FormParam("itemID") String itemID, @FormParam("lat") Integer lat, @FormParam("lng") Integer lng){
-			
+	public void storeLocation(@FormParam("itemID") String itemID, @FormParam("lat") Integer lat, @FormParam("lng") Integer lng){
 		ItemLocation location = new ItemLocation(itemID, lat, lng);
 		if(serverData.getAttribute("locations") == null) {
 			locations.add(location);
-			System.out.println(locations);
 			serverData.setAttribute("locations", locations);
-			System.out.println(serverData.getAttribute("locations"));
-			return "Made attribute";
 		}
 		else {
 			ArrayList<ItemLocation> serverLocations = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
 			serverLocations.add(location);
 			System.out.println(serverData.getAttribute("locations"));
-			return "added to attribute";
 		}	
 	}
 	
+	/*
+	 * This method retrieves the items in the servlet session attribute "locations"
+	 * that have been bought around the current location of the customer.
+	 */
 	@GET
 	@Path("getLocations")
-	public String getLocations(@QueryParam("lat") double lat, @QueryParam("lng") double lng) {
+	public String getLocations(@QueryParam("lat") Integer lat, @QueryParam("lng") Integer lng) {
 		if (serverData.getAttribute("locations") != null) {
 		ArrayList<ItemLocation> locs = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
-		ArrayList<ItemLocation> rightLocs = new ArrayList<ItemLocation>();
-		return locs.toString();
+		JSONArray rightLocs = new JSONArray();
+		int latMax = lat + 1;
+		int latMin = lat - 1;
+		int lngMax = lng + 1;
+		int lngMin = lng - 1;
+		
+		for (ItemLocation loc : locs) {
+			if (latMin <= loc.getLat() && loc.getLat() <= latMax) {
+				if (lngMin <= loc.getLng() && loc.getLng() <= lngMax) {
+					JSONObject o = new JSONObject();
+					o.put("loc", loc.getItemID());
+					rightLocs.put(o);
+				}
+			}
 		}
 		
-		return "nothing in server";
+		return rightLocs.toString();
+		}
+		return "";
 	 }
 
 	/* 

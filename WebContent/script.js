@@ -107,9 +107,7 @@ $(function() {
 					else {
 						if (loc.lat !== 0 && loc.lng !== 0) {
 							var toSendNow = "itemID=" + product.ID + "&lat=" +  loc.lat + "&lng="+loc.lng;
-							sendRequest("POST", "rest/shop/location", toSendNow, function(someString) {
-								alert(someString);
-							});
+							sendRequest("POST", "rest/shop/location", toSendNow, function() {});
 						}
 					}
 				});
@@ -360,15 +358,25 @@ function createRecommendationView() {
 
 		});
 	}
-
 	else {
-		pHeader.textContent = "Please log in to see your personal suggestions or chose Location suggestions";
+		pHeader.textContent = "Please log in to see your personal suggestions";
 	}
 
+	//button for geolocation suggestion
+	button.style.float = "right";
+	button.textContent="Location suggestions";
+	addEventListener(button, "click", function() {
+		if (location.lat !== 0 && location.lng !== 0) {
+			var toSend = "lat=" + parseInt(loc.lat) + "&lng=" + parseInt(loc.lng);
+			sendRequest("GET", "rest/shop/getLocations?"+toSend, null, function(locations) {
+				var locs = JSON.parse(locations);
+			});
+		}
+		else {
+			alert("Position is undefined");
+		}
+	});
 	
-	//text.appendChild(description);
-	//description.appendChild(purchaseList);
-
 	//Info
 	var info = document.createElement("div");
 	info.setAttribute("class", "productInfo");
@@ -445,6 +453,10 @@ function dragOver(ev) {
 function dragAway() {
 	$("#totalPrice").css("color", "yellow");
 }
+
+/*
+ * Function for picking a random item out of an array and making a display for it.
+ */
 
 
 /*
