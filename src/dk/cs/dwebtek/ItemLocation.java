@@ -2,10 +2,10 @@ package dk.cs.dwebtek;
 
 public class ItemLocation {
 	private String itemID;
-	private double lat;
-	private double lng;
+	private int lat;
+	private int lng;
 	
-	public ItemLocation(String itemID, double lat, double lng) {
+	public ItemLocation(String itemID, int lat, int lng) {
 		this.setItemID(itemID);
 		this.setLat(lat);
 		this.setLng(lng);
@@ -19,19 +19,19 @@ public class ItemLocation {
 		this.itemID = itemID;
 	}
 
-	public double getLat() {
+	public int getLat() {
 		return lat;
 	}
 
-	public void setLat(double lat) {
+	public void setLat(int lat) {
 		this.lat = lat;
 	}
 
-	public double getLng() {
+	public int getLng() {
 		return lng;
 	}
 
-	public void setLng(double lng) {
+	public void setLng(int lng) {
 		this.lng = lng;
 	}
 }

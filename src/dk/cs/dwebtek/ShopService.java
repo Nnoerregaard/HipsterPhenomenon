@@ -54,6 +54,7 @@ public class ShopService{
 
 	public ShopService(@Context ServletContext session){
 		schemaPath = session.getRealPath("WEB-INF/cloud.xsd");
+		locations = new ArrayList<ItemLocation>();
 	}
 
 	/*
@@ -351,14 +352,35 @@ public class ShopService{
 	
 	@POST
 	@Path("location")
-	public String storeLocation(@FormParam("itemID") String itemID, @FormParam("lat") String lat, @FormParam("lng") String lng){
-			ItemLocation location = new ItemLocation(itemID, Double.parseDouble(lat), Double.parseDouble(lng));
+	public String storeLocation(@FormParam("itemID") String itemID, @FormParam("lat") Integer lat, @FormParam("lng") Integer lng){
+			
+		ItemLocation location = new ItemLocation(itemID, lat, lng);
+		if(serverData.getAttribute("locations") == null) {
 			locations.add(location);
-
-			System.out.println(itemID+" "+lat+" "+lng);
-			//serverData.setAttribute("locations", locations);
-			return itemID+" "+lat+" "+lng;
+			System.out.println(locations);
+			serverData.setAttribute("locations", locations);
+			System.out.println(serverData.getAttribute("locations"));
+			return "Made attribute";
+		}
+		else {
+			ArrayList<ItemLocation> serverLocations = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
+			serverLocations.add(location);
+			System.out.println(serverData.getAttribute("locations"));
+			return "added to attribute";
+		}	
 	}
+	
+	@GET
+	@Path("getLocations")
+	public String getLocations(@QueryParam("lat") double lat, @QueryParam("lng") double lng) {
+		if (serverData.getAttribute("locations") != null) {
+		ArrayList<ItemLocation> locs = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
+		ArrayList<ItemLocation> rightLocs = new ArrayList<ItemLocation>();
+		return locs.toString();
+		}
+		
+		return "nothing in server";
+	 }
 
 	/* 
 	 * |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

@@ -115,7 +115,7 @@ $(function() {
 				});
 		//Give location to bought item
 				if (loc.lat !== 0 && loc.lng !== 0) {
-					var toSendNow = "itemID=" + product.ID + "&lat=" +  Math.round(loc.lat) + "&lng=" + Math.round(loc.lng);
+					var toSendNow = "itemID=" + product.ID + "&lat=" +  parseInt(loc.lat) + "&lng=" + parseInt(loc.lng);
 					sendRequest("POST", "rest/shop/location", toSendNow, function(response) {
 						alert(response);
 					});
@@ -438,9 +438,11 @@ function createRecommendationView() {
 
 		});
 	}
+
 	else {
 		pHeader.textContent = "Please log in to see your personal suggestions or chose Location suggestions";
 	}
+
 	
 	//text.appendChild(description);
 	//description.appendChild(purchaseList);
