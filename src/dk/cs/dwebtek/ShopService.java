@@ -356,10 +356,10 @@ public class ShopService{
 	@Path("location")
 	public String storeLocation(
 			@FormParam("itemID") String itemID,
-			@FormParam("lat") double lat,
-			@FormParam("lng") double lng)
+			@FormParam("lat") String lat,
+			@FormParam("lng") String lng)
 	{
-			ItemLocation location = new ItemLocation(itemID, lat, lng);
+			ItemLocation location = new ItemLocation(itemID, Double.parseDouble(lat), Double.parseDouble(lng));
 			locations.add(location);
 			System.out.println(itemID+" "+lat+" "+lng);
 			serverData.setAttribute("locations", locations);
@@ -378,6 +378,7 @@ public class ShopService{
 	 */
 
 	private String getCustomerID(String username){
+		username = username.toLowerCase();
 		HttpURLConnection connection = connect("GET", "listCustomers");
 		try {
 			Document d = b.build(connection.getInputStream());

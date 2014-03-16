@@ -101,27 +101,19 @@ $(function() {
 				var toSend = "username=" + customer.username + "&" + "itemID=" + product.ID + "&" + "saleAmount=" + product.Amount;
 				customer.amountSold += product.Amount;
 				sendRequest("POST", "rest/shop/sell", toSend, function(saleResponse) {
-					if (saleResponse === "true") {
-						sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
-						});
-						//This else is executed if the purchase did not succeed!
-					} else {
+					if (saleResponse === "false") {
 						$("#totalPrice").html("Something went wrong");
 					}
+					else {
+						if (loc.lat !== 0 && loc.lng !== 0) {
+							var toSendNow = "itemID=" + product.ID + "&lat=" +  loc.lat + "&lng="+loc.lng;
+							sendRequest("POST", "rest/shop/location", toSendNow, function(someString) {
+								alert(someString);
+							});
+						}
+					}
 				});
-				//Give location to bought item
-				if (loc.lat !== 0 && loc.lng !== 0) {
-					var toSendNow = "itemID=" + product.ID + "&lat=" +  loc.lat + "&lng="+loc.lng;
-					sendRequest("POST", "rest/shop/location", toSendNow, function(someString) {
-						alert(someString);
-					});
-				}
-			});
-			// Updates the view after purchase
-			sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
-				// This code is called when the server has sent its data. It calls the method building the view on the site	
-				var items = JSON.parse(itemsText);
-				addItemsToTable(items, "279");
+
 			});
 			/*
 			 * Do not write in plural if the customer only bought one product
@@ -135,6 +127,12 @@ $(function() {
 			else {
 				$("#totalPrice").html(shoppingCart +" You have succesfully bought the item");
 			}
+			// Updates the view after purchase
+			sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
+				// This code is called when the server has sent its data. It calls the method building the view on the site	
+				var items = JSON.parse(itemsText);
+				addItemsToTable(items, "279");
+			});
 			reset(); //Is executed before the items has actually been sold. It does not matter, however, since we have a copy of the cart in the variable cart
 		} else {
 			alert("Please log in to buy products");
