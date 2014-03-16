@@ -113,7 +113,19 @@ $(function() {
 						}
 					}
 				});
-
+		//Give location to bought item
+				if (loc.lat !== 0 && loc.lng !== 0) {
+					var toSendNow = "itemID=" + product.ID + "&lat=" +  Math.round(loc.lat) + "&lng=" + Math.round(loc.lng);
+					sendRequest("POST", "rest/shop/location", toSendNow, function(response) {
+						alert(response);
+					});
+				}
+			});
+			// Updates the view after purchase
+			sendRequest("GET", "rest/shop/items?ID=279", null, function(itemsText) {
+				// This code is called when the server has sent its data. It calls the method building the view on the site	
+				var items = JSON.parse(itemsText);
+				addItemsToTable(items, "279");
 			});
 			/*
 			 * Do not write in plural if the customer only bought one product
@@ -374,7 +386,6 @@ function createRecommendationView() {
 	var pHeader = document.createElement("h5");
 	pHeader.textContent = "Based on your previous purchases, we suggest";
 	text.appendChild(pHeader);
-	text.appendChild(button);
 	if (customer.loggedIn){
 		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
 			suggestedItems = JSON.parse(response);
@@ -413,9 +424,9 @@ function createRecommendationView() {
 	addEventListener(button, "click", function() {
 		getLocation();
 	});
-
+	
+	text.appendChild(button);
 	frame.appendChild(text);
-	frame.appendChild(button);
 	//text.appendChild(description);
 	//description.appendChild(purchaseList);
 

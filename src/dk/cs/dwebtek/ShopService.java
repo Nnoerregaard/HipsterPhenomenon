@@ -354,16 +354,13 @@ public class ShopService{
 	
 	@POST
 	@Path("location")
-	public String storeLocation(
-			@FormParam("itemID") String itemID,
-			@FormParam("lat") String lat,
-			@FormParam("lng") String lng)
-	{
+	public String storeLocation(@FormParam("itemID") String itemID, @FormParam("lat") String lat, @FormParam("lng") String lng){
 			ItemLocation location = new ItemLocation(itemID, Double.parseDouble(lat), Double.parseDouble(lng));
 			locations.add(location);
+
 			System.out.println(itemID+" "+lat+" "+lng);
-			serverData.setAttribute("locations", locations);
-			return locations.toString();
+			//serverData.setAttribute("locations", locations);
+			return itemID+" "+lat+" "+lng;
 	}
 
 	/* 
