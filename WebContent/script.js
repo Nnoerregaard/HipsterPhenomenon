@@ -233,7 +233,7 @@ function addItemsToTable(items, shopID) {
 		var table = $("<table/>");
 
 		//Price
-		$("<tr><td><h6>Price:</h6></td><td><h6>"+item.itemPrice+"</h6></td></tr>").appendTo(table);
+		$("<tr><td><h6>Price:</h6></td><td><h6 id=\"price"+item.itemPrice+"\"></h6></td></tr>").appendTo(table);
 
 		//Stock
 		$("<tr><td><h6>Stock:</h6></td><td><h6>"+item.itemStock+"</h6></td></tr>").appendTo(table);
