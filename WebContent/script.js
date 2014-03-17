@@ -111,12 +111,10 @@ $(function() {
 						}
 					}
 				});
-		//Give location to bought item
+				//Give location to bought item
 				if (loc.lat !== 0 && loc.lng !== 0) {
 					var toSendNow = "itemID=" + product.ID + "&lat=" +  parseInt(loc.lat) + "&lng=" + parseInt(loc.lng);
-					sendRequest("POST", "rest/shop/location", toSendNow, function(response) {
-						alert(response);
-					});
+					sendRequest("POST", "rest/shop/location", toSendNow, function() {});
 				}
 			});
 			// Updates the view after purchase
@@ -290,7 +288,7 @@ function addItemsToTable(items, shopID) {
 	 * Only create this view when we are looking at HipsterPhenomenon
 	 */
 	if (shopID == 279){
-		//createRecommendationView();
+		createRecommendationView();
 	}
 }
 
@@ -341,10 +339,24 @@ function createRecommendationView() {
 		if (loc.lat !== 0 && loc.lng !== 0) {
 			var toSend = "lat=" + parseInt(loc.lat) + "&lng=" + parseInt(loc.lng);
 			sendRequest("GET", "rest/shop/getLocations?"+toSend, null, function(chosenItem) {
-				var loc = JSON.parse(chosenItem);
-				var locationSuggestion = makeSuggestedItem(loc);
-				locationSuggestion.setAttribute("id", "location");
-				frame.appendChild(locationSuggestion);
+				try{
+					var loc = JSON.parse(chosenItem);
+					if($("#location").length == 0) {
+						var locationSuggestion = makeSuggestedItem(loc);
+						locationSuggestion.setAttribute("id", "location");
+						frame.appendChild(locationSuggestion);
+					}
+					else {
+						$("#location").html("");
+						$("#location").remove();
+						var locationSuggestion = makeSuggestedItem(loc);
+						locationSuggestion.setAttribute("id", "location");
+						frame.appendChild(locationSuggestion);
+					}
+				}
+				catch(e) {
+					alert("no suggestion available");
+				}
 			});
 		}
 		else {
