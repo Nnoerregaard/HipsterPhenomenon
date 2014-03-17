@@ -366,7 +366,6 @@ public class ShopService{
 		else {
 			ArrayList<ItemLocation> serverLocations = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
 			serverLocations.add(location);
-			System.out.println(serverData.getAttribute("locations"));
 		}	
 	}
 	
@@ -406,7 +405,10 @@ public class ShopService{
 		
 		JSONObject o = new JSONObject();
 		o.put("itemName", chosenItem.getChildText("itemName", ns));
+		o.put("itemID", chosenItem.getChildText("itemID", ns));
 		o.put("itemURL", chosenItem.getChildText("itemURL", ns));
+		o.put("itemPrice", chosenItem.getChildText("itemPrice", ns));
+		o.put("itemStock", chosenItem.getChildText("itemStock", ns));
 		
 		return o.toString();
 		}
