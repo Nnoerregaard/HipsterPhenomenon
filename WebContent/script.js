@@ -402,35 +402,7 @@ function createRecommendationView() {
 		sendRequest("GET", "rest/shop/purchases", null, function(response) {			
 			suggestedItems = JSON.parse(response);
 			suggestedItems.forEach(function(item) {
-				var suggestedItem = document.createElement("div");
-				suggestedItem.setAttribute("class", "suggestItemDiv");
-				
-				var header = document.createElement("h5");
-				header.textContent = item.itemName;
-				
-				var img = document.createElement("img");
-				img.setAttribute("class", "productimage");
-				img.setAttribute("alt", item.itemName);
-				img.setAttribute("src", item.itemURL);
-				img.setAttribute("draggable", "true");
-				
-				var addButton = document.createElement("input");
-				addButton.setAttribute("type", "button");
-				addButton.setAttribute("value", "Add to cart");
-				suggestedItem.appendChild(header);
-				suggestedItem.appendChild(img);
-				suggestedItem.appendChild(addButton);
-				
-				img.addEventListener("dragstart", function(event) {
-					var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
-					JSONDragInformation = JSON.stringify(dragInformation);
-					event.dataTransfer.setData("Information", JSONDragInformation);
-				});
-				
-				addEventListener(addButton, "click", function(){
-					addItemToCart(item.itemStock, item.itemID, item.itemPrice);
-				});
-				
+				var suggestedItem = makeSuggestedItem(item);
 				frame.appendChild(suggestedItem);
 			});
 
@@ -444,10 +416,13 @@ function createRecommendationView() {
 	button.style.float = "right";
 	button.textContent="Location suggestions";
 	addEventListener(button, "click", function() {
-		if (location.lat !== 0 && location.lng !== 0) {
+		if (loc.lat !== 0 && loc.lng !== 0) {
 			var toSend = "lat=" + parseInt(loc.lat) + "&lng=" + parseInt(loc.lng);
-			sendRequest("GET", "rest/shop/getLocations?"+toSend, null, function(locations) {
-				var locs = JSON.parse(locations);
+			sendRequest("GET", "rest/shop/getLocations?"+toSend, null, function(chosenItem) {
+				var loc = JSON.parse(chosenItem);
+				var locationSuggestion = makeSuggestedItem(loc);
+				locationSuggestion.setAttribute("id", "location");
+				frame.appendChild(locationSuggestion);
 			});
 		}
 		else {
@@ -533,9 +508,40 @@ function dragAway() {
 }
 
 /*
- * Function for picking a random item out of an array and making a display for it.
+ * Function for making a display for a suggestion item.
  */
-
+function makeSuggestedItem(item) {
+	var suggestedItem = document.createElement("div");
+	suggestedItem.setAttribute("class", "suggestItemDiv");
+	
+	var header = document.createElement("h5");
+	header.textContent = item.itemName;
+	
+	var img = document.createElement("img");
+	img.setAttribute("class", "productimage");
+	img.setAttribute("alt", item.itemName);
+	img.setAttribute("src", item.itemURL);
+	img.setAttribute("draggable", "true");
+	
+	var addButton = document.createElement("input");
+	addButton.setAttribute("type", "button");
+	addButton.setAttribute("value", "Add to cart");
+	suggestedItem.appendChild(header);
+	suggestedItem.appendChild(img);
+	suggestedItem.appendChild(addButton);
+	
+	img.addEventListener("dragstart", function(event) {
+		var dragInformation = {stock: item.itemStock, ID : item.itemID, price: item.itemPrice};
+		JSONDragInformation = JSON.stringify(dragInformation);
+		event.dataTransfer.setData("Information", JSONDragInformation);
+	});
+	
+	addEventListener(addButton, "click", function(){
+		addItemToCart(item.itemStock, item.itemID, item.itemPrice);
+	});
+	
+	return suggestedItem;
+}
 
 /*
  * Code for geolocation

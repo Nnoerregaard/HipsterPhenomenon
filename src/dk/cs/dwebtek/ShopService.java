@@ -379,7 +379,7 @@ public class ShopService{
 	public String getLocations(@QueryParam("lat") Integer lat, @QueryParam("lng") Integer lng) {
 		if (serverData.getAttribute("locations") != null) {
 		ArrayList<ItemLocation> locs = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
-		JSONArray rightLocs = new JSONArray();
+		ArrayList<ItemLocation> rightLocs = new ArrayList<ItemLocation>();
 		int latMax = lat + 1;
 		int latMin = lat - 1;
 		int lngMax = lng + 1;
@@ -388,14 +388,27 @@ public class ShopService{
 		for (ItemLocation loc : locs) {
 			if (latMin <= loc.getLat() && loc.getLat() <= latMax) {
 				if (lngMin <= loc.getLng() && loc.getLng() <= lngMax) {
-					JSONObject o = new JSONObject();
-					o.put("loc", loc.getItemID());
-					rightLocs.put(o);
+					rightLocs.add(loc);
 				}
 			}
 		}
 		
-		return rightLocs.toString();
+		int random = (int) (Math.random() * (rightLocs.size() - 1) + 1);
+		ItemLocation chosenOne = rightLocs.get(random);
+		String chosenID = chosenOne.getItemID();
+		List<Element> items = getItems("279");
+		Element chosenItem = null;
+		for (Element item : items) {
+			if (chosenID.equals(item.getChildText("itemID", ns))) {
+				chosenItem = item;
+			}
+		}
+		
+		JSONObject o = new JSONObject();
+		o.put("itemName", chosenItem.getChildText("itemName", ns));
+		o.put("itemURL", chosenItem.getChildText("itemURL", ns));
+		
+		return o.toString();
 		}
 		return "";
 	 }
