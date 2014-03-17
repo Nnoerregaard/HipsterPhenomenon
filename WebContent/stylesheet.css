@@ -230,6 +230,15 @@ because of the opacity property*/
     float:left;
 }
 
+.suggestItemDiv input{
+	color: #FFFFFF;
+	font-weight: bold;
+	background-color: lime;
+	border-color: lime;
+	border-radius: 5px;
+	width: 10em;
+}
+
 .suggestionframe {
 	border: .063em #777777 solid;
 	width: 99.3%;

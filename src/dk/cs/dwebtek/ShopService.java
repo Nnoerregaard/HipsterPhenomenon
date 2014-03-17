@@ -364,6 +364,7 @@ public class ShopService{
 			serverData.setAttribute("locations", locations);
 		}
 		else {
+			@SuppressWarnings("unchecked")
 			ArrayList<ItemLocation> serverLocations = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
 			serverLocations.add(location);
 		}	
@@ -377,6 +378,7 @@ public class ShopService{
 	@Path("getLocations")
 	public String getLocations(@QueryParam("lat") Integer lat, @QueryParam("lng") Integer lng) {
 		if (serverData.getAttribute("locations") != null) {
+		@SuppressWarnings("unchecked")
 		ArrayList<ItemLocation> locs = (ArrayList<ItemLocation>) serverData.getAttribute("locations");
 		ArrayList<ItemLocation> rightLocs = new ArrayList<ItemLocation>();
 		int latMax = lat + 1;
