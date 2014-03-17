@@ -367,7 +367,7 @@ function addItemsToTable(items, shopID) {
 	 */
 	if (shopID == 279){
 		createRecommendationView();
-	}
+	};
 }
 
 /*
